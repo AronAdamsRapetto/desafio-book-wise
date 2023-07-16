@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.0.0",
     "@stitches/react": "^1.2.8",
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
@@ -21,6 +22,11 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@rocketseat/eslint-config": "^2.0.1"
+    "@rocketseat/eslint-config": "^2.0.1",
+    "prisma": "^5.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }
