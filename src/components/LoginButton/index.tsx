@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import { signIn } from 'next-auth/react'
+
 import googleLogo from '../../assets/google_logo_1.png'
 import githubLogo from '../../assets/github_logo.svg'
 import visitorIcon from '../../assets/visitor_rocket_icon.svg'
@@ -11,14 +13,14 @@ interface LoginButtonProps {
 export default function LoginButton({ variant }: LoginButtonProps) {
   if (variant === 'google') {
     return (
-      <ConnectButton>
+      <ConnectButton onClick={() => signIn('google')}>
         <Image src={googleLogo} alt="Icone Google" width={32} height={32} />
         <span>Entrar com Google</span>
       </ConnectButton>
     )
   } else if (variant === 'github') {
     return (
-      <ConnectButton>
+      <ConnectButton onClick={() => signIn('github')}>
         <Image src={githubLogo} alt="Icone GitHub" width={32} height={32} />
         <span>Entrar com Github</span>
       </ConnectButton>

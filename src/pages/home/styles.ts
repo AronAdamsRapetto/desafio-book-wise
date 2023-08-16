@@ -13,22 +13,21 @@ export const Container = styled('div', {
 
 export const RigthSide = styled('div', {
   maxHeight: '100vh',
-  padding: '$5',
   position: 'relative',
+  overflow: 'hidden',
+  borderRadius: '$md',
+  margin: '$5',
+
+  img: {
+    objectFit: 'cover',
+    width: '100%',
+    height: '100%',
+  },
 
   '@media(max-width: 768px)': {
     height: '40%',
-    width: '100%',
-    padding: '$3',
+    margin: '$3',
   },
-})
-
-export const InnerContainer = styled('div', {
-  width: '100%',
-  height: '100%',
-  borderRadius: '$md',
-  position: 'relative',
-  overflow: 'hidden',
 })
 
 export const LeftSide = styled('div', {

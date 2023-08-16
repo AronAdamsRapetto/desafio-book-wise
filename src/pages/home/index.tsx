@@ -1,26 +1,13 @@
 import Image from 'next/image'
 import homeWelcomeImage from '../../assets/home_welcome_image.svg'
 import LoginButton from '@/components/LoginButton'
-import {
-  Container,
-  RigthSide,
-  InnerContainer,
-  LeftSide,
-  MenuLogin,
-} from './styles'
+import { Container, RigthSide, LeftSide, MenuLogin } from './styles'
 
 export default function Home() {
   return (
     <Container>
       <RigthSide>
-        <InnerContainer>
-          <Image
-            src={homeWelcomeImage}
-            alt=""
-            objectFit="cover"
-            layout="fill"
-          />
-        </InnerContainer>
+        <Image src={homeWelcomeImage} alt="" priority />
       </RigthSide>
 
       <LeftSide>
