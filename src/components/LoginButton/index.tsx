@@ -1,33 +1,34 @@
 import Image from 'next/image'
-import googleLogo from '../assets/google_logo.svg'
-import githubLogo from '../assets/github_logo.svg'
-import visitorIcon from '../assets/visitor_rocket_icon.svg'
+import googleLogo from '../../assets/google_logo.svg'
+import githubLogo from '../../assets/github_logo.svg'
+import visitorIcon from '../../assets/visitor_rocket_icon.svg'
+import { ConnectButton } from './styles'
 
 interface LoginButtonProps {
-  variant: 'google' | 'github' | 'visitant'
+  variant?: 'google' | 'github'
 }
 
 export default function LoginButton({ variant }: LoginButtonProps) {
   if (variant === 'google') {
     return (
-      <button>
+      <ConnectButton>
         <Image src={googleLogo} alt="Icone Google" />
         <span>Entrar com Google</span>
-      </button>
+      </ConnectButton>
     )
   } else if (variant === 'github') {
     return (
-      <button>
+      <ConnectButton>
         <Image src={githubLogo} alt="Icone GitHub" />
         <span>Entrar com Github</span>
-      </button>
+      </ConnectButton>
     )
   } else {
     return (
-      <button>
+      <ConnectButton>
         <Image src={visitorIcon} alt="Icone Visitante" />
         <span>Acessar como visitante</span>
-      </button>
+      </ConnectButton>
     )
   }
 }

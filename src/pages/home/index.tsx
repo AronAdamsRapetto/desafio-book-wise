@@ -30,7 +30,7 @@ export default function Home() {
 
           <LoginButton variant="google" />
           <LoginButton variant="github" />
-          <LoginButton variant="visitant" />
+          <LoginButton />
         </MenuLogin>
       </LeftSide>
     </Container>
