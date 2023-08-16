@@ -2,8 +2,11 @@ import Image from 'next/image'
 import homeWelcomeImage from '../../assets/home_welcome_image.svg'
 import LoginButton from '@/components/LoginButton'
 import { Container, RigthSide, LeftSide, MenuLogin } from './styles'
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
+  const { data } = useSession()
+  console.log(data)
   return (
     <Container>
       <RigthSide>
