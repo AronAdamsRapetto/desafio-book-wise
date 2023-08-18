@@ -25,7 +25,7 @@ export const MenuContainer = styled('div', {
 
   borderRadius: '$md',
   margin: '$5 0 $5 $5',
-  boxShadow: '0 2px 2px rgba(0,0,0,0.3)',
+  boxShadow: '0 2px 2px rgba(0,0,0,0.1)',
 
   header: {
     display: 'flex',

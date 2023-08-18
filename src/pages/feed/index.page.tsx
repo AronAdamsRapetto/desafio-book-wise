@@ -1,20 +1,15 @@
-import Image from 'next/image'
-
-import { ChartLineUp } from 'phosphor-react'
+import Link from 'next/link'
+import { CaretRight, ChartLineUp } from 'phosphor-react'
 
 import {
-  ActivityCard,
-  ActivityContent,
-  ActivityHeader,
-  ActivityUserInfo,
   LeftSide,
   PageContainer,
   PageWrapper,
   RigthSide,
   TitleContainer,
 } from './styles'
-
-import book from '../../../public/books/o-hobbit.png'
+import ActivityList from './components/ActivityList'
+import PopularBooksList from './components/PopularBooksList'
 
 export default function Feed() {
   return (
@@ -27,38 +22,18 @@ export default function Feed() {
       <PageWrapper>
         <LeftSide>
           <span>Avaliações mais recentes</span>
-          <ActivityCard>
-            <ActivityHeader>
-              <ActivityUserInfo>
-                <div>
-                  <Image src={''} alt="" />
-                </div>
-                <div>
-                  <span>Jaxson Dias</span>
-                  <span>Hoje</span>
-                </div>
-              </ActivityUserInfo>
-              <span>STARS</span>
-            </ActivityHeader>
-
-            <ActivityContent>
-              <Image src={book} alt="" />
-              <div>
-                <span>O Hobbit</span>
-                <span>J.R.R. Tolkien</span>
-                <p>
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Expedita vel veniam natus pariatur nobis vitae sequi aliquam
-                  facilis culpa! Facilis deleniti quos veritatis eius nemo
-                  tempora doloribus natus maiores laborum!
-                </p>
-              </div>
-            </ActivityContent>
-          </ActivityCard>
+          <ActivityList />
         </LeftSide>
 
         <RigthSide>
-          <span>Livros populares</span>
+          <div>
+            <span>Livros populares</span>
+            <Link href="/explore">
+              <span>Ver todos</span>
+              <CaretRight size={16} weight="regular" />
+            </Link>
+          </div>
+          <PopularBooksList />
         </RigthSide>
       </PageWrapper>
     </PageContainer>
