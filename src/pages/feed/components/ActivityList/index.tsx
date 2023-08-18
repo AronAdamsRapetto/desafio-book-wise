@@ -6,39 +6,60 @@ import {
   ActivityHeader,
   ActivityUserInfo,
 } from './styles'
-import book from '../../../../../public/books/o-hobbit.png'
+import { Activity } from '../../index.page'
+import { Star } from 'phosphor-react'
 
-export default function ActivityList() {
-  const testList = [0, 1, 2, 3]
+export interface ActivityListProps {
+  activities: Activity[]
+}
+
+export default function ActivityList({ activities }: ActivityListProps) {
+  const ratingMap = [1, 2, 3, 4, 5]
 
   return (
     <>
-      {testList.map((item) => (
-        <ActivityCard key={item}>
+      {activities.map((activity) => (
+        <ActivityCard key={activity.id}>
           <ActivityHeader>
             <ActivityUserInfo>
               <div>
-                <Image src={''} alt="" />
+                <Image
+                  src={activity.user.image ?? ''}
+                  alt=""
+                  width={40}
+                  height={40}
+                />
               </div>
               <div>
-                <span>Jaxson Dias</span>
+                <span>{activity.user.name}</span>
                 <span>Hoje</span>
               </div>
             </ActivityUserInfo>
-            <span>STARS</span>
+            <div>
+              {ratingMap.map((value) => {
+                if (activity.rate >= value) {
+                  return <Star size={16} weight="fill" key={value} />
+                } else {
+                  return <Star size={16} weight="regular" key={value} />
+                }
+              })}
+            </div>
           </ActivityHeader>
 
           <ActivityContent>
-            <Image src={book} alt="" />
+            <Image
+              src={`http://localhost:3000${activity.book.cover_url.replace(
+                'public/images',
+                '',
+              )}`}
+              alt=""
+              width={108}
+              height={152}
+            />
             <div>
-              <span>O Hobbit</span>
-              <span>J.R.R. Tolkien</span>
-              <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Expedita vel veniam natus pariatur nobis vitae sequi aliquam
-                facilis culpa! Facilis deleniti quos veritatis eius nemo tempora
-                doloribus natus maiores laborum!
-              </p>
+              <span>{activity.book.name}</span>
+              <span>{activity.book.author}</span>
+              <p>{activity.description}</p>
             </div>
           </ActivityContent>
         </ActivityCard>

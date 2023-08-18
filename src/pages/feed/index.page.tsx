@@ -1,5 +1,7 @@
 import Link from 'next/link'
+import { GetServerSideProps } from 'next'
 import { CaretRight, ChartLineUp } from 'phosphor-react'
+import { prisma } from '../../lib/prisma'
 
 import {
   LeftSide,
@@ -11,7 +13,27 @@ import {
 import ActivityList from './components/ActivityList'
 import PopularBooksList from './components/PopularBooksList'
 
-export default function Feed() {
+export type Activity = {
+  id: string
+  description: string
+  rate: number
+  created_at: Date
+  user: {
+    image?: string
+    name: string
+  }
+  book: {
+    cover_url: string
+    name: string
+    author: string
+  }
+}
+
+interface FeedProps {
+  activities: Activity[]
+}
+
+export default function Feed({ activities }: FeedProps) {
   return (
     <PageContainer>
       <TitleContainer>
@@ -22,7 +44,7 @@ export default function Feed() {
       <PageWrapper>
         <LeftSide>
           <span>Avaliações mais recentes</span>
-          <ActivityList />
+          <ActivityList activities={activities} />
         </LeftSide>
 
         <RigthSide>
@@ -38,4 +60,42 @@ export default function Feed() {
       </PageWrapper>
     </PageContainer>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const ratings = await prisma.rating.findMany({
+    select: {
+      id: true,
+      description: true,
+      rate: true,
+      created_at: true,
+      user: {
+        select: {
+          image: true,
+          name: true,
+        },
+      },
+      book: {
+        select: {
+          name: true,
+          author: true,
+          cover_url: true,
+        },
+      },
+    },
+    orderBy: { created_at: 'desc' },
+  })
+
+  const activities = ratings.map(
+    ({ created_at: createdAt, book, ...rating }) => ({
+      book: {
+        coverUrl: book.cover_url,
+        ...book,
+      },
+      createdAt: JSON.stringify(createdAt),
+      ...rating,
+    }),
+  )
+
+  return { props: { activities } }
 }

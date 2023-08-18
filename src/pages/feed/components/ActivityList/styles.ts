@@ -18,6 +18,12 @@ export const ActivityHeader = styled('header', {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'flex-start',
+
+  '> div:last-child': {
+    display: 'flex',
+    gap: '$1',
+    color: '$purple100',
+  },
 })
 
 export const ActivityUserInfo = styled('div', {
@@ -32,6 +38,7 @@ export const ActivityUserInfo = styled('div', {
       'linear-gradient($gray700, $gray700) padding-box, $gradient-vertical border-box',
     borderRadius: '$full',
     border: '2px solid transparent',
+    overflow: 'hidden',
 
     img: {
       width: '100%',

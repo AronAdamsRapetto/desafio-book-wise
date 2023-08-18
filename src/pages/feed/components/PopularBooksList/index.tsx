@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
 import { BookCard, BookCardInfo } from './styles'
-import book from '../../../../../public/books/a-revolucao-dos-bichos.png'
+import book from '../../../../../public/books/a-revolucao-dos-bixos.jpg'
 
 export default function PopularBooksList() {
   const testList = [0, 1, 2]

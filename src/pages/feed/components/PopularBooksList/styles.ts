@@ -3,17 +3,24 @@ import { styled } from '@/styles/stitches.config'
 export const BookCard = styled('button', {
   display: 'flex',
   gap: '$5',
-  border: 'none',
 
   padding: '$4 $5',
   marginBottom: '$3',
   background: '$gray700',
   borderRadius: '$md',
   boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
+  border: '2px solid transparent',
+
+  transition: '0.1s ease-in',
 
   img: {
     width: 'auto',
     maxHeight: '5.8rem',
+  },
+
+  '&:hover': {
+    borderColor: '$gray600',
+    cursor: 'pointer',
   },
 })
 
