@@ -13,9 +13,12 @@ export const MenuContainer = styled('div', {
   flexDirection: 'column',
   justifyContent: 'space-between',
   alignItems: 'center',
+  // flexShrink: 0,
 
   height: 'calc(100vh - 2.50rem)',
   width: '14.5rem',
+  minWidth: '169px',
+
   backgroundImage: `url(/sidebar_background_image.svg)`,
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
