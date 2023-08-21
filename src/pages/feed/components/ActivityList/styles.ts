@@ -70,8 +70,7 @@ export const ActivityUserInfo = styled('div', {
 export const ActivityContent = styled('div', {
   display: 'flex',
   gap: '$5',
-  overflow: 'hidden',
-  position: 'relative',
+  maxHeight: '159px',
 
   img: {
     width: 'auto',
@@ -101,6 +100,8 @@ export const ActivityContent = styled('div', {
     },
 
     p: {
+      maxHeight: 'calc(1.4rem * 4)',
+      overflow: 'hidden',
       fontFamily: '$default',
       fontSize: '$sm',
       fontWeight: '$regular',
@@ -109,5 +110,3 @@ export const ActivityContent = styled('div', {
     },
   },
 })
-
-export const SeeMore = styled('span', {})

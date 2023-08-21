@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { GetServerSideProps } from 'next'
 import { CaretRight, ChartLineUp } from 'phosphor-react'
-import { prisma } from '../../lib/prisma'
 
 import {
   LeftSide,
@@ -10,8 +9,10 @@ import {
   RigthSide,
   TitleContainer,
 } from './styles'
+import { prisma } from '../../lib/prisma'
 import ActivityList from './components/ActivityList'
 import PopularBooksList from './components/PopularBooksList'
+import { getDistanceToNow } from '@/utils/getDistanceToNow'
 
 export type Activity = {
   id: string
@@ -34,6 +35,15 @@ interface FeedProps {
 }
 
 export default function Feed({ activities }: FeedProps) {
+  const activityList = activities.map((activity) => {
+    const { createdAt, ...activityKeys } = activity
+
+    return {
+      createdAt: getDistanceToNow(createdAt),
+      ...activityKeys,
+    }
+  })
+
   return (
     <PageContainer>
       <TitleContainer>
@@ -44,7 +54,9 @@ export default function Feed({ activities }: FeedProps) {
       <PageWrapper>
         <LeftSide>
           <span>Avaliações mais recentes</span>
-          <ActivityList activities={activities} />
+          {activityList.map((activity) => (
+            <ActivityList key={activity.id} activity={activity} />
+          ))}
         </LeftSide>
 
         <RigthSide>
