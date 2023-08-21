@@ -8,6 +8,7 @@ import {
 } from './styles'
 import { Activity } from '../../index.page'
 import { Star } from 'phosphor-react'
+import { getDistanceToNow } from '@/utils/getDistanceToNow'
 
 export interface ActivityListProps {
   activities: Activity[]
@@ -16,9 +17,18 @@ export interface ActivityListProps {
 export default function ActivityList({ activities }: ActivityListProps) {
   const ratingMap = [1, 2, 3, 4, 5]
 
+  const activityList = activities.map((activity) => {
+    const { createdAt, ...activityKeys } = activity
+
+    return {
+      createdAt: getDistanceToNow(createdAt),
+      ...activityKeys,
+    }
+  })
+
   return (
     <>
-      {activities.map((activity) => (
+      {activityList.map((activity) => (
         <ActivityCard key={activity.id}>
           <ActivityHeader>
             <ActivityUserInfo>
@@ -32,7 +42,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
               </div>
               <div>
                 <span>{activity.user.name}</span>
-                <span>Hoje</span>
+                <span>{activity.createdAt}</span>
               </div>
             </ActivityUserInfo>
             <div>
@@ -48,7 +58,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
 
           <ActivityContent>
             <Image
-              src={`http://localhost:3000${activity.book.cover_url.replace(
+              src={`http://localhost:3000${activity.book.coverUrl.replace(
                 'public/images',
                 '',
               )}`}

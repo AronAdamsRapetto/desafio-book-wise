@@ -41,8 +41,8 @@ export const ActivityUserInfo = styled('div', {
     overflow: 'hidden',
 
     img: {
-      width: '100%',
-      heigth: '100%',
+      width: '40px',
+      heigth: '40px',
       objectFit: 'cover',
     },
   },
@@ -70,9 +70,12 @@ export const ActivityUserInfo = styled('div', {
 export const ActivityContent = styled('div', {
   display: 'flex',
   gap: '$5',
+  overflow: 'hidden',
+  position: 'relative',
 
   img: {
     width: 'auto',
+    height: 'auto',
     maxHeight: '9.5rem',
   },
 
@@ -106,3 +109,5 @@ export const ActivityContent = styled('div', {
     },
   },
 })
+
+export const SeeMore = styled('span', {})

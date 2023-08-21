@@ -17,13 +17,13 @@ export type Activity = {
   id: string
   description: string
   rate: number
-  created_at: Date
+  createdAt: string
   user: {
     image?: string
     name: string
   }
   book: {
-    cover_url: string
+    coverUrl: string
     name: string
     author: string
   }
@@ -92,7 +92,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         coverUrl: book.cover_url,
         ...book,
       },
-      createdAt: JSON.stringify(createdAt),
+      createdAt: createdAt.toISOString(),
       ...rating,
     }),
   )
