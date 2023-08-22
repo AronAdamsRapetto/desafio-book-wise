@@ -32,7 +32,7 @@ export const BookCardInfo = styled('div', {
 
   height: '100%',
 
-  '> div': {
+  '> div:first-child': {
     display: 'flex',
     flexDirection: 'column',
     textAlign: 'left',
@@ -50,5 +50,11 @@ export const BookCardInfo = styled('div', {
       fontSize: '$sm',
       lineHeigth: '$base',
     },
+  },
+
+  '> div:last-child': {
+    display: 'flex',
+    gap: '$1',
+    color: '$purple100',
   },
 })

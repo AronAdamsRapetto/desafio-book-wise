@@ -10,11 +10,11 @@ import {
 import { Activity } from '../../index.page'
 import { Star } from 'phosphor-react'
 
-export interface ActivityListProps {
+export interface ActivityFeedCardProps {
   activity: Activity
 }
 
-export default function ActivityList({ activity }: ActivityListProps) {
+export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
   const ratingMap = [1, 2, 3, 4, 5]
 
   return (

@@ -10,9 +10,9 @@ import {
   TitleContainer,
 } from './styles'
 import { prisma } from '../../lib/prisma'
-import ActivityList from './components/ActivityList'
-import PopularBooksList from './components/PopularBooksList'
+import ActivityFeedCard from './components/ActivityFeedCard'
 import { getDistanceToNow } from '@/utils/getDistanceToNow'
+import PopularBookCard from './components/PopularBooksCard'
 
 export type Activity = {
   id: string
@@ -30,11 +30,20 @@ export type Activity = {
   }
 }
 
-interface FeedProps {
-  activities: Activity[]
+export type PopularBook = {
+  id: string
+  name: string
+  author: string
+  coverUrl: string
+  rate: number
 }
 
-export default function Feed({ activities }: FeedProps) {
+interface FeedProps {
+  activities: Activity[]
+  popularBooks: PopularBook[]
+}
+
+export default function Feed({ activities, popularBooks }: FeedProps) {
   const activityList = activities.map((activity) => {
     const { createdAt, ...activityKeys } = activity
 
@@ -55,7 +64,7 @@ export default function Feed({ activities }: FeedProps) {
         <LeftSide>
           <span>Avaliações mais recentes</span>
           {activityList.map((activity) => (
-            <ActivityList key={activity.id} activity={activity} />
+            <ActivityFeedCard key={activity.id} activity={activity} />
           ))}
         </LeftSide>
 
@@ -67,7 +76,9 @@ export default function Feed({ activities }: FeedProps) {
               <CaretRight size={16} weight="regular" />
             </Link>
           </div>
-          <PopularBooksList />
+          {popularBooks.map((book) => (
+            <PopularBookCard key={book.id} book={book} />
+          ))}
         </RigthSide>
       </PageWrapper>
     </PageContainer>
@@ -105,13 +116,50 @@ export const getServerSideProps: GetServerSideProps = async () => {
         ...book,
       },
       createdAt: createdAt.toISOString(),
-      ...rating,
       description:
         description.length > 180
           ? description.substring(0, 180) + '...'
           : description,
+      ...rating,
     }),
   )
 
-  return { props: { activities } }
+  const books = await prisma.book.findMany({
+    select: {
+      id: true,
+      name: true,
+      author: true,
+      cover_url: true,
+      ratings: {
+        select: {
+          rate: true,
+        },
+      },
+    },
+  })
+
+  const popularBooks = books.map(
+    ({ cover_url: coverUrl, ratings, name, ...book }) => {
+      const rate = ratings.reduce((value, { rate }, index) => {
+        if (index < ratings.length - 1) {
+          return (value += rate)
+        }
+        return (value += rate) / ratings.length
+      }, 0)
+
+      return {
+        name: name.length > 34 ? name.substring(0, 29) + '...' : name,
+        coverUrl,
+        rate,
+        ...book,
+      }
+    },
+  )
+
+  return {
+    props: {
+      activities,
+      popularBooks: popularBooks.sort((a, b) => b.rate - a.rate).slice(0, 4),
+    },
+  }
 }
