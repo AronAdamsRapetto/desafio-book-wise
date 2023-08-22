@@ -99,13 +99,17 @@ export const getServerSideProps: GetServerSideProps = async () => {
   })
 
   const activities = ratings.map(
-    ({ created_at: createdAt, book, ...rating }) => ({
+    ({ created_at: createdAt, book, description, ...rating }) => ({
       book: {
         coverUrl: book.cover_url,
         ...book,
       },
       createdAt: createdAt.toISOString(),
       ...rating,
+      description:
+        description.length > 180
+          ? description.substring(0, 180) + '...'
+          : description,
     }),
   )
 

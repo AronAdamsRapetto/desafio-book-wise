@@ -110,3 +110,20 @@ export const ActivityContent = styled('div', {
     },
   },
 })
+
+export const SeeMoreButton = styled('button', {
+  border: 'none',
+  background: '$gray700',
+  marginLeft: '$1',
+
+  color: '$purple100',
+  fontFamily: '$default',
+  fontSize: '$sm',
+  fontWeight: '$bold',
+  lineHeight: '$base',
+
+  '&:hover': {
+    opacity: '0.6',
+    cursor: 'pointer',
+  },
+})

@@ -5,6 +5,7 @@ import {
   ActivityContent,
   ActivityHeader,
   ActivityUserInfo,
+  SeeMoreButton,
 } from './styles'
 import { Activity } from '../../index.page'
 import { Star } from 'phosphor-react'
@@ -57,7 +58,12 @@ export default function ActivityList({ activity }: ActivityListProps) {
         <div>
           <span>{activity.book.name}</span>
           <span>{activity.book.author}</span>
-          <p>{activity.description}</p>
+          <p>
+            {activity.description}
+            {activity.description.endsWith('...') && (
+              <SeeMoreButton>Ver mais</SeeMoreButton>
+            )}
+          </p>
         </div>
       </ActivityContent>
     </ActivityCard>
