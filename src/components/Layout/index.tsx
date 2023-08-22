@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { ReactNode } from 'react'
 import { useRouter } from 'next/router'
 
-import { ChartLineUp, Binoculars, SignIn } from 'phosphor-react'
+import { ChartLineUp, Binoculars, SignIn, User, SignOut } from 'phosphor-react'
 
 import logoImage from '../../assets/book_wise_brand.svg'
 import {
@@ -11,14 +11,19 @@ import {
   MenuContainer,
   NavLink,
   NavMenu,
+  ProfileContainer,
 } from './styles'
+import { useSession } from 'next-auth/react'
 
 interface LayoutProps {
   children: ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const { status, data: session } = useSession()
   const router = useRouter()
+
+  console.log(session)
 
   return (
     <LayoutWrapper>
@@ -43,13 +48,42 @@ export default function Layout({ children }: LayoutProps) {
               />
               <span>Explorar</span>
             </NavLink>
+            {status === 'authenticated' && (
+              <NavLink
+                href={'/profile'}
+                selected={router.pathname === '/profile'}
+              >
+                <User
+                  size={24}
+                  weight={router.pathname === '/feed' ? 'bold' : 'regular'}
+                />
+                <span>Perfil</span>
+              </NavLink>
+            )}
           </NavMenu>
         </header>
 
-        <LoginButton>
-          <span>Fazer login</span>
-          <SignIn size={24} weight="regular" color="#50B2C0" />
-        </LoginButton>
+        {status === 'authenticated' ? (
+          <ProfileContainer>
+            <div>
+              <Image
+                src={session.user?.image ?? ''}
+                alt=""
+                width={32}
+                height={32}
+              />
+            </div>
+            <span>Cristofer</span>
+            <button>
+              <SignOut size={20} weight="regular" color="#F75A68" />
+            </button>
+          </ProfileContainer>
+        ) : (
+          <LoginButton>
+            <span>Fazer login</span>
+            <SignIn size={24} weight="regular" color="#50B2C0" />
+          </LoginButton>
+        )}
       </MenuContainer>
       {children}
     </LayoutWrapper>

@@ -10,7 +10,6 @@ interface PopularBookCardProps {
 
 export default function PopularBookCard({ book }: PopularBookCardProps) {
   const ratingMap = [1, 2, 3, 4, 5]
-  console.log(book)
 
   return (
     <BookCard>

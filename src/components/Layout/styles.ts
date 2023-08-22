@@ -13,7 +13,6 @@ export const MenuContainer = styled('div', {
   flexDirection: 'column',
   justifyContent: 'space-between',
   alignItems: 'center',
-  // flexShrink: 0,
 
   height: 'calc(100vh - 2.50rem)',
   width: '14.5rem',
@@ -114,6 +113,52 @@ export const LoginButton = styled('button', {
 
     svg: {
       transform: 'translateX(0.3rem)',
+    },
+  },
+})
+
+export const ProfileContainer = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '$3',
+
+  marginBottom: '$6',
+  color: '$gray100',
+  fontFamily: '$default',
+  fontSize: '$sm',
+  fontWeight: '$regular',
+  lineHeight: '$base',
+
+  '> div': {
+    width: '2rem',
+    height: '2rem',
+
+    overflow: 'hidden',
+    borderRadius: '$full',
+    border: '1px solid transparent',
+    background:
+      'linear-gradient($gray700, $gray700) padding-box, $gradient-vertical border-box',
+
+    img: {
+      width: '100%',
+      heigth: '100%',
+      objectFit: 'cover',
+    },
+  },
+
+  '> button': {
+    border: 'none',
+    background: 'transparent',
+
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    transition: '0.2s ease-in',
+
+    '&:hover': {
+      cursor: 'pointer',
+      transform: 'TranslateX(0.3rem)',
     },
   },
 })
