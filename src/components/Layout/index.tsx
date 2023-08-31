@@ -13,7 +13,7 @@ import {
   NavMenu,
   ProfileContainer,
 } from './styles'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 interface LayoutProps {
   children: ReactNode
@@ -74,7 +74,7 @@ export default function Layout({ children }: LayoutProps) {
               />
             </div>
             <span>Cristofer</span>
-            <button>
+            <button onClick={() => signOut()}>
               <SignOut size={20} weight="regular" color="#F75A68" />
             </button>
           </ProfileContainer>

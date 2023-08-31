@@ -5,6 +5,7 @@ import {
   ActivityContent,
   ActivityHeader,
   ActivityUserInfo,
+  DescriptionContainer,
   SeeMoreButton,
 } from './styles'
 import { Activity } from '../../index.page'
@@ -58,12 +59,12 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
         <div>
           <span>{activity.book.name}</span>
           <span>{activity.book.author}</span>
-          <p>
-            {activity.description}
+          <DescriptionContainer>
+            <span>{activity.description}</span>
             {activity.description.endsWith('...') && (
               <SeeMoreButton>Ver mais</SeeMoreButton>
             )}
-          </p>
+          </DescriptionContainer>
         </div>
       </ActivityContent>
     </ActivityCard>

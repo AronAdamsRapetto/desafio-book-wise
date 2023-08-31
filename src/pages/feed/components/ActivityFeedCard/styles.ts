@@ -78,7 +78,7 @@ export const ActivityContent = styled('div', {
     maxHeight: '9.5rem',
   },
 
-  div: {
+  '> div:nth-child(2)': {
     display: 'flex',
     flexDirection: 'column',
 
@@ -98,16 +98,23 @@ export const ActivityContent = styled('div', {
       color: '$gray400',
       marginBottom: '$5',
     },
+  },
+})
 
-    p: {
-      maxHeight: 'calc(1.4rem * 4)',
-      overflow: 'hidden',
-      fontFamily: '$default',
-      fontSize: '$sm',
-      fontWeight: '$regular',
-      lineHeight: '$base',
-      color: '$gray300',
-    },
+export const DescriptionContainer = styled('div', {
+  height: 'min-content',
+  maxHeight: 'calc(1.4rem * 4)',
+  overflow: 'hidden',
+
+  span: {
+    display: 'inline',
+    maxHeight: 'calc(1.4rem * 4)',
+    overflow: 'hidden',
+    fontFamily: '$default',
+    fontSize: '$sm',
+    fontWeight: '$regular',
+    lineHeight: '$base',
+    color: '$gray300',
   },
 })
 
