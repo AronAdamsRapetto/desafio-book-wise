@@ -23,8 +23,6 @@ export default function Layout({ children }: LayoutProps) {
   const { status, data: session } = useSession()
   const router = useRouter()
 
-  console.log(session)
-
   return (
     <LayoutWrapper>
       <MenuContainer>

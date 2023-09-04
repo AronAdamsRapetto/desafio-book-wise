@@ -10,6 +10,7 @@ import {
 } from './styles'
 import { Activity } from '../../index.page'
 import { Star } from 'phosphor-react'
+import Link from 'next/link'
 
 export interface ActivityFeedCardProps {
   activity: Activity
@@ -31,7 +32,9 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
             />
           </div>
           <div>
-            <span>{activity.user.name}</span>
+            <Link href="/profile">
+              <span>{activity.user.name}</span>
+            </Link>
             <span>{activity.createdAt}</span>
           </div>
         </ActivityUserInfo>

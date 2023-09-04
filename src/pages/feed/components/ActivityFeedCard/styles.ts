@@ -55,6 +55,15 @@ export const ActivityUserInfo = styled('div', {
     fontWeight: '$regular',
     lineHeight: 'base',
 
+    a: {
+      textDecoration: 'none',
+      color: '$gray100',
+
+      '&:hover': {
+        textDecoration: 'underline',
+      },
+    },
+
     '> span:nth-child(1)': {
       fontSize: '$md',
       color: '$gray100',

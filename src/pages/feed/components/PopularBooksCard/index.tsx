@@ -12,6 +12,7 @@ export default function PopularBookCard({ book }: PopularBookCardProps) {
   const ratingMap = [1, 2, 3, 4, 5]
 
   return (
+    // Abrirá o dialog com o livro
     <BookCard>
       <Image
         src={`http://localhost:3000${book.coverUrl.replace(
