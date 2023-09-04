@@ -1,8 +1,10 @@
 import Image from 'next/image'
 import { ReactNode } from 'react'
 import { useRouter } from 'next/router'
+import { signOut, useSession } from 'next-auth/react'
 
 import { ChartLineUp, Binoculars, SignIn, User, SignOut } from 'phosphor-react'
+import * as RadixDialog from '@radix-ui/react-dialog'
 
 import logoImage from '../../assets/book_wise_brand.svg'
 import {
@@ -13,7 +15,7 @@ import {
   NavMenu,
   ProfileContainer,
 } from './styles'
-import { signOut, useSession } from 'next-auth/react'
+import LoginDialog from '../LoginDialog'
 
 interface LayoutProps {
   children: ReactNode
@@ -77,10 +79,15 @@ export default function Layout({ children }: LayoutProps) {
             </button>
           </ProfileContainer>
         ) : (
-          <LoginButton>
-            <span>Fazer login</span>
-            <SignIn size={24} weight="regular" color="#50B2C0" />
-          </LoginButton>
+          <RadixDialog.Root>
+            <RadixDialog.Trigger asChild>
+              <LoginButton>
+                <span>Fazer login</span>
+                <SignIn size={24} weight="regular" color="#50B2C0" />
+              </LoginButton>
+            </RadixDialog.Trigger>
+            <LoginDialog />
+          </RadixDialog.Root>
         )}
       </MenuContainer>
       {children}

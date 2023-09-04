@@ -90,6 +90,7 @@ export const LoginButton = styled('button', {
   display: 'flex',
   justifyContent: 'center',
   gap: '$3',
+  marginBottom: '1.75rem',
 
   border: 'none',
   background: 'transparent',
@@ -104,8 +105,6 @@ export const LoginButton = styled('button', {
     fontSize: '$md',
     fontWeight: '$bold',
     lineHeight: '$base',
-
-    marginBottom: '1.75rem',
   },
 
   '&:hover': {
