@@ -18,7 +18,12 @@ export default function Home() {
   return (
     <Container>
       <RigthSide>
-        <Image src={homeWelcomeImage} alt="" priority />
+        <Image
+          src={homeWelcomeImage}
+          alt=""
+          placeholder="blur"
+          blurDataURL="../../assets/home_welcome_image.svg"
+        />
       </RigthSide>
 
       <LeftSide>

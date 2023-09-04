@@ -79,13 +79,12 @@ export const ActivityUserInfo = styled('div', {
 export const ActivityContent = styled('div', {
   display: 'flex',
   gap: '$5',
-  maxHeight: '159px',
 
-  img: {
-    width: 'auto',
-    height: 'auto',
-    maxHeight: '9.5rem',
-  },
+  // img: {
+  //   width: 'auto',
+  //   height: '9.5rem',
+  //   maxHeight: '9.5rem',
+  // },
 
   '> div:nth-child(2)': {
     display: 'flex',

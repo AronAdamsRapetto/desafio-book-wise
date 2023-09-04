@@ -10,19 +10,12 @@ interface PopularBookCardProps {
 
 export default function PopularBookCard({ book }: PopularBookCardProps) {
   const ratingMap = [1, 2, 3, 4, 5]
+  const bookImageUrl = `http://localhost:3000/${book.coverUrl}`
 
   return (
     // Abrirá o dialog com o livro
     <BookCard>
-      <Image
-        src={`http://localhost:3000${book.coverUrl.replace(
-          'public/images',
-          '',
-        )}`}
-        width={100}
-        height={100}
-        alt=""
-      />
+      <Image src={bookImageUrl} alt="" width={100} height={100} />
       <BookCardInfo>
         <div>
           <span>{book.name}</span>

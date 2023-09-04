@@ -18,6 +18,7 @@ export interface ActivityFeedCardProps {
 
 export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
   const ratingMap = [1, 2, 3, 4, 5]
+  const bookImageUrl = `http://localhost:3000/${activity.book.coverUrl}`
 
   return (
     <ActivityCard key={activity.id}>
@@ -50,15 +51,7 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
       </ActivityHeader>
 
       <ActivityContent>
-        <Image
-          src={`http://localhost:3000${activity.book.coverUrl.replace(
-            'public/images',
-            '',
-          )}`}
-          alt=""
-          width={108}
-          height={152}
-        />
+        <Image src={bookImageUrl} alt="" width={108} height={152} />
         <div>
           <span>{activity.book.name}</span>
           <span>{activity.book.author}</span>

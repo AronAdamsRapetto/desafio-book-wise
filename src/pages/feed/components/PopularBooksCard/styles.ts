@@ -15,7 +15,7 @@ export const BookCard = styled('button', {
 
   img: {
     width: 'auto',
-    maxHeight: '5.8rem',
+    height: '5.8rem',
   },
 
   '&:hover': {
