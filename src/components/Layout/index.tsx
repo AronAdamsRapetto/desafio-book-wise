@@ -73,7 +73,7 @@ export default function Layout({ children }: LayoutProps) {
                 height={32}
               />
             </div>
-            <span>Cristofer</span>
+            <span>{session.user?.name}</span>
             <button onClick={() => signOut()}>
               <SignOut size={20} weight="regular" color="#F75A68" />
             </button>

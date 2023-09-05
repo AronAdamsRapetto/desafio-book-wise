@@ -128,6 +128,13 @@ export const ProfileContainer = styled('div', {
   fontWeight: '$regular',
   lineHeight: '$base',
 
+  span: {
+    width: '4rem',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  },
+
   '> div': {
     width: '2rem',
     height: '2rem',
@@ -139,8 +146,8 @@ export const ProfileContainer = styled('div', {
       'linear-gradient($gray700, $gray700) padding-box, $gradient-vertical border-box',
 
     img: {
-      width: '100%',
-      heigth: '100%',
+      // width: '100%',
+      // heigth: '100%',
       objectFit: 'cover',
     },
   },
