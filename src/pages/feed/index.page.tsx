@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { GetServerSideProps } from 'next'
-import { CaretRight, ChartLineUp } from 'phosphor-react'
+import { CaretRight, ChartLineUp, Star } from 'phosphor-react'
 
 import {
+  LastActivityContainer,
+  LastActivityContent,
   LeftSide,
   PageContainer,
   PageWrapper,
@@ -13,6 +15,9 @@ import { prisma } from '../../lib/prisma'
 import ActivityFeedCard from './components/ActivityFeedCard'
 import { getDistanceToNow } from '@/utils/getDistanceToNow'
 import PopularBookCard from './components/PopularBooksCard'
+import Image from 'next/image'
+
+import bookImage from '../../../public/books/arquitetura-limpa.jpg'
 
 export type Activity = {
   id: string
@@ -53,6 +58,8 @@ export default function Feed({ activities, popularBooks }: FeedProps) {
     }
   })
 
+  const ratingMap = [1, 2, 3, 4, 5]
+
   return (
     <PageContainer>
       <TitleContainer>
@@ -62,6 +69,36 @@ export default function Feed({ activities, popularBooks }: FeedProps) {
 
       <PageWrapper>
         <LeftSide>
+          <div>
+            <span>Sua última leitura</span>
+            <Link href="/profile">
+              Ver todas
+              <CaretRight size={16} />
+            </Link>
+          </div>
+          <LastActivityContainer>
+            <Image src={bookImage} alt="" width={108} height={152} />
+            <LastActivityContent>
+              <div>
+                <span>Há 2 dias</span>
+                <div>
+                  {ratingMap.map((value) => {
+                    return <Star size={16} weight="regular" key={value} />
+                  })}
+                </div>
+              </div>
+              <div>
+                <span>Entendendo Algoritmos</span>
+                <span>Aditya Bhargava</span>
+              </div>
+              <span>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor
+                dicta, odit nam nisi quidem exercitationem voluptate non
+                tempora, facilis aperiam aliquam modi blanditiis nesciunt.
+                Nostrum voluptas sit culpa quia deserunt.
+              </span>
+            </LastActivityContent>
+          </LastActivityContainer>
           <span>Avaliações mais recentes</span>
           {activityList.map((activity) => (
             <ActivityFeedCard key={activity.id} activity={activity} />

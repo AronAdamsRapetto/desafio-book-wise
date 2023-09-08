@@ -48,7 +48,7 @@ export const BookCardInfo = styled('div', {
       color: '$gray400',
       fontFamily: '$default',
       fontSize: '$sm',
-      lineHeigth: '$base',
+      lineHeight: '$base',
     },
   },
 

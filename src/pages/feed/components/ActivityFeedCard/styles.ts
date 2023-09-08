@@ -42,7 +42,7 @@ export const ActivityUserInfo = styled('div', {
 
     img: {
       width: '40px',
-      heigth: '40px',
+      height: '40px',
       objectFit: 'cover',
     },
   },

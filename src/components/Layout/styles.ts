@@ -146,8 +146,8 @@ export const ProfileContainer = styled('div', {
       'linear-gradient($gray700, $gray700) padding-box, $gradient-vertical border-box',
 
     img: {
-      // width: '100%',
-      // heigth: '100%',
+      width: '100%',
+      height: '100%',
       objectFit: 'cover',
     },
   },

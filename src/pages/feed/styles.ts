@@ -36,14 +36,117 @@ export const LeftSide = styled('main', {
 
   marginRight: '4rem',
 
-  '> span': {
+  '> span, > div:first-child > span': {
     fontFamily: '$default',
     fontSize: '$sm',
     fontWeight: '$regular',
     lineHeight: '$base',
     color: '$gray100',
+  },
 
+  '> span': {
     marginBottom: '$4',
+  },
+
+  '> div:first-child': {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '$4',
+
+    '> a': {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '$2',
+
+      textDecoration: 'none',
+      fontFamily: '$default',
+      color: '$purple100',
+      fontWeight: '$bold',
+      fontSize: '$sm',
+
+      padding: '$1 $2',
+      borderRadius: '$sm',
+      transition: '0.1s ease-in',
+
+      '&:hover': {
+        background: 'rgba(131, 129, 217, 0.1)',
+      },
+    },
+  },
+})
+
+export const LastActivityContainer = styled('div', {
+  display: 'flex',
+  gap: '$6',
+
+  background: '$gray600',
+  padding: '$5 $6',
+  borderRadius: '$md',
+
+  marginBottom: '$10',
+})
+
+export const LastActivityContent = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+
+  '> div:nth-child(1)': {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '$3',
+
+    span: {
+      fontFamily: '$default',
+      color: '$gray300',
+      fontSize: '$sm',
+      fontWeight: '$regular',
+      lineHeight: '$base',
+    },
+
+    '> div': {
+      display: 'flex',
+      gap: '$1',
+      color: '$purple100',
+    },
+  },
+
+  '> div:nth-child(2)': {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: '$6',
+
+    '> span:first-child': {
+      fontFamily: '$default',
+      color: '$gray100',
+      fontSize: '$md',
+      fontWeight: '$bold',
+      lineHeight: '$short',
+    },
+
+    '> span:last-child': {
+      fontFamily: '$default',
+      color: '$gray400',
+      fontSize: '$sm',
+      fontWeight: '$regular',
+      lineHeight: '$base',
+    },
+  },
+
+  '> span': {
+    fontFamily: '$default',
+    color: '$gray300',
+    fontSize: '$sm',
+    fontWeight: '$regular',
+    lineHeight: '$base',
+
+    display: '-webkit-box',
+    overflow: 'hidden',
+    whiteSpace: 'pre-wrap',
+    '-webkit-line-clamp': 2,
+    '-webkit-box-orient': 'vertical',
+
+    maxHeight: 'calc(1.4rem * 2)',
   },
 })
 
@@ -73,6 +176,8 @@ export const RigthSide = styled('aside', {
 
       textDecoration: 'none',
       color: '$purple100',
+      fontWeight: '$bold',
+      fontSize: '$sm',
 
       padding: '$1 $2',
       borderRadius: '$sm',
