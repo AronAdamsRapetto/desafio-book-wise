@@ -16,8 +16,7 @@ import ActivityFeedCard from './components/ActivityFeedCard'
 import { getDistanceToNow } from '@/utils/getDistanceToNow'
 import PopularBookCard from './components/PopularBooksCard'
 import Image from 'next/image'
-
-import bookImage from '../../../public/books/arquitetura-limpa.jpg'
+import { getSession } from 'next-auth/react'
 
 export type Activity = {
   id: string
@@ -43,12 +42,28 @@ export type PopularBook = {
   rate: number
 }
 
+type LoggedUserLastRating = {
+  description: string
+  rate: number
+  createdAt: string
+  book: {
+    name: string
+    author: string
+    coverUrl: string
+  }
+}
+
 interface FeedProps {
   activities: Activity[]
   popularBooks: PopularBook[]
+  loggedUserLastRating: LoggedUserLastRating | null
 }
 
-export default function Feed({ activities, popularBooks }: FeedProps) {
+export default function Feed({
+  activities,
+  popularBooks,
+  loggedUserLastRating,
+}: FeedProps) {
   const activityList = activities.map((activity) => {
     const { createdAt, ...activityKeys } = activity
 
@@ -69,36 +84,46 @@ export default function Feed({ activities, popularBooks }: FeedProps) {
 
       <PageWrapper>
         <LeftSide>
-          <div>
-            <span>Sua última leitura</span>
-            <Link href="/profile">
-              Ver todas
-              <CaretRight size={16} />
-            </Link>
-          </div>
-          <LastActivityContainer>
-            <Image src={bookImage} alt="" width={108} height={152} />
-            <LastActivityContent>
+          {loggedUserLastRating && (
+            <>
               <div>
-                <span>Há 2 dias</span>
-                <div>
-                  {ratingMap.map((value) => {
-                    return <Star size={16} weight="regular" key={value} />
-                  })}
-                </div>
+                <span>Sua última leitura</span>
+                <Link href="/profile">
+                  Ver todas
+                  <CaretRight size={16} />
+                </Link>
               </div>
-              <div>
-                <span>Entendendo Algoritmos</span>
-                <span>Aditya Bhargava</span>
-              </div>
-              <span>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolor
-                dicta, odit nam nisi quidem exercitationem voluptate non
-                tempora, facilis aperiam aliquam modi blanditiis nesciunt.
-                Nostrum voluptas sit culpa quia deserunt.
-              </span>
-            </LastActivityContent>
-          </LastActivityContainer>
+              <LastActivityContainer>
+                <Image
+                  src={`http://localhost:3000/${loggedUserLastRating.book.coverUrl}`}
+                  alt=""
+                  width={108}
+                  height={152}
+                />
+                <LastActivityContent>
+                  <div>
+                    <span>
+                      {getDistanceToNow(loggedUserLastRating.createdAt)}
+                    </span>
+                    <div>
+                      {ratingMap.map((value) => {
+                        if (loggedUserLastRating.rate >= value) {
+                          return <Star size={16} weight="fill" key={value} />
+                        } else {
+                          return <Star size={16} weight="regular" key={value} />
+                        }
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <span>{loggedUserLastRating.book.name}</span>
+                    <span>{loggedUserLastRating.book.author}</span>
+                  </div>
+                  <span>{loggedUserLastRating.description}</span>
+                </LastActivityContent>
+              </LastActivityContainer>
+            </>
+          )}
           <span>Avaliações mais recentes</span>
           {activityList.map((activity) => (
             <ActivityFeedCard key={activity.id} activity={activity} />
@@ -113,16 +138,20 @@ export default function Feed({ activities, popularBooks }: FeedProps) {
               <CaretRight size={16} weight="regular" />
             </Link>
           </div>
-          {popularBooks.map((book) => (
-            <PopularBookCard key={book.id} book={book} />
-          ))}
+          <div>
+            {popularBooks.map((book) => (
+              <PopularBookCard key={book.id} book={book} />
+            ))}
+          </div>
         </RigthSide>
       </PageWrapper>
     </PageContainer>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getSession(ctx)
+
   const ratings = await prisma.rating.findMany({
     select: {
       id: true,
@@ -147,18 +176,23 @@ export const getServerSideProps: GetServerSideProps = async () => {
   })
 
   const activities = ratings.map(
-    ({ created_at: createdAt, book, description, ...rating }) => ({
-      book: {
-        coverUrl: book.cover_url,
-        ...book,
-      },
-      createdAt: createdAt.toISOString(),
-      description:
-        description.length > 180
-          ? description.substring(0, 180) + '...'
-          : description,
-      ...rating,
-    }),
+    ({ created_at: createdAt, book, description, ...rating }) => {
+      const descriptionWords = description.split(' ')
+      console.log(descriptionWords)
+
+      return {
+        book: {
+          coverUrl: book.cover_url,
+          ...book,
+        },
+        createdAt: createdAt.toISOString(),
+        description:
+          descriptionWords.length > 40
+            ? descriptionWords.slice(0, 40).join(' ') + '...'
+            : description,
+        ...rating,
+      }
+    },
   )
 
   const books = await prisma.book.findMany({
@@ -176,7 +210,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   })
 
   const popularBooks = books.map(
-    ({ cover_url: coverUrl, ratings, name, ...book }) => {
+    ({ cover_url: coverUrl, ratings, ...book }) => {
       const rate = ratings.reduce((value, { rate }, index) => {
         if (index < ratings.length - 1) {
           return (value += rate)
@@ -185,7 +219,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       }, 0)
 
       return {
-        name: name.length > 34 ? name.substring(0, 29) + '...' : name,
         coverUrl,
         rate,
         ...book,
@@ -193,10 +226,56 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   )
 
+  let loggedUserLastRating: LoggedUserLastRating | null
+
+  if (session && session.user && session.user.email) {
+    const loggedUserRatings = await prisma.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+      select: {
+        ratings: {
+          select: {
+            description: true,
+            rate: true,
+            created_at: true,
+            book: {
+              select: {
+                name: true,
+                author: true,
+                cover_url: true,
+              },
+            },
+          },
+          orderBy: { created_at: 'desc' },
+        },
+      },
+    })
+
+    if (loggedUserRatings?.ratings[0]) {
+      const lastRating = loggedUserRatings?.ratings[0]
+      const { created_at: createdAt, book, ...rest } = lastRating
+
+      loggedUserLastRating = {
+        createdAt: createdAt.toISOString(),
+        book: {
+          coverUrl: book.cover_url,
+          ...book,
+        },
+        ...rest,
+      }
+    } else {
+      loggedUserLastRating = null
+    }
+  } else {
+    loggedUserLastRating = null
+  }
+
   return {
     props: {
       activities,
       popularBooks: popularBooks.sort((a, b) => b.rate - a.rate).slice(0, 4),
+      loggedUserLastRating,
     },
   }
 }

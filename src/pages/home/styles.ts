@@ -5,10 +5,10 @@ export const Container = styled('div', {
   gridTemplateColumns: '40% 60%',
   height: '100vh',
 
-  '@media(max-width: 768px)': {
-    display: 'flex',
-    flexDirection: 'column',
-  },
+  // '@media(max-width: 768px)': {
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  // },
 })
 
 export const RigthSide = styled('div', {
@@ -24,10 +24,10 @@ export const RigthSide = styled('div', {
     height: '100%',
   },
 
-  '@media(max-width: 768px)': {
-    height: '40%',
-    margin: '$3',
-  },
+  // '@media(max-width: 768px)': {
+  //   height: '40%',
+  //   margin: '$3',
+  // },
 })
 
 export const LeftSide = styled('div', {
@@ -37,11 +37,11 @@ export const LeftSide = styled('div', {
   justifyContent: 'center',
   alignItems: 'center',
 
-  '@media(max-width: 768px)': {
-    width: '100%',
-    alignItems: 'flex-start',
-    marginTop: '$6',
-  },
+  // '@media(max-width: 768px)': {
+  //   width: '100%',
+  //   alignItems: 'flex-start',
+  //   marginTop: '$6',
+  // },
 })
 
 export const MenuLogin = styled('div', {

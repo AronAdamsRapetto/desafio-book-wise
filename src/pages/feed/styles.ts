@@ -3,6 +3,10 @@ import { styled } from '../../styles/stitches.config'
 export const PageContainer = styled('div', {
   marginTop: '$5',
   margin: '0 6rem',
+
+  '@media(max-width: 1102px)': {
+    margin: '0 4rem',
+  },
 })
 
 export const TitleContainer = styled('div', {
@@ -28,6 +32,11 @@ export const TitleContainer = styled('div', {
 export const PageWrapper = styled('div', {
   display: 'grid',
   gridTemplateColumns: '1fr 22.5vw',
+
+  '@media(max-width: 1102px)': {
+    display: 'flex',
+    flexDirection: 'column-reverse',
+  },
 })
 
 export const LeftSide = styled('main', {
@@ -64,6 +73,7 @@ export const LeftSide = styled('main', {
       color: '$purple100',
       fontWeight: '$bold',
       fontSize: '$sm',
+      lineHeight: '$base',
 
       padding: '$1 $2',
       borderRadius: '$sm',
@@ -73,6 +83,11 @@ export const LeftSide = styled('main', {
         background: 'rgba(131, 129, 217, 0.1)',
       },
     },
+  },
+
+  '@media(max-width: 1102px)': {
+    marginRight: 0,
+    width: 'calc(100vw - 8rem - 169px)',
   },
 })
 
@@ -178,6 +193,7 @@ export const RigthSide = styled('aside', {
       color: '$purple100',
       fontWeight: '$bold',
       fontSize: '$sm',
+      lineHeight: '$base',
 
       padding: '$1 $2',
       borderRadius: '$sm',
@@ -186,6 +202,24 @@ export const RigthSide = styled('aside', {
       '&:hover': {
         background: 'rgba(131, 129, 217, 0.1)',
       },
+    },
+  },
+
+  '> div:nth-child(2)': {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  '@media(max-width: 1102px)': {
+    marginRight: '4rem',
+    marginBottom: '$10',
+    width: 'calc(100vw - 8rem - 169px)',
+
+    '> div:nth-child(2)': {
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+      gap: '$2',
+      overflow: 'auto',
     },
   },
 })

@@ -22,6 +22,10 @@ export const BookCard = styled('button', {
     borderColor: '$gray600',
     cursor: 'pointer',
   },
+
+  '@media(max-width: 1102px)': {
+    minWidth: '260px',
+  },
 })
 
 export const BookCardInfo = styled('div', {
@@ -43,6 +47,12 @@ export const BookCardInfo = styled('div', {
       fontSize: '$md',
       fontWeight: '$bold',
       lineHeight: '$short',
+
+      display: '-webkit-box',
+      overflow: 'hidden',
+      whiteSpace: 'pre-wrap',
+      '-webkit-line-clamp': 2,
+      '-webkit-box-orient': 'vertical',
     },
     'span:nth-child(2)': {
       color: '$gray400',
