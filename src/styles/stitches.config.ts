@@ -1,4 +1,7 @@
 import { createStitches } from '@stitches/react'
+import { Nunito_Sans as nunitoSans } from 'next/font/google'
+
+const nunito = nunitoSans({ subsets: ['latin'], weight: ['400', '500', '700'] })
 
 export const {
   styled,
@@ -12,7 +15,7 @@ export const {
 } = createStitches({
   theme: {
     fonts: {
-      default: 'Nunito, sans-serif',
+      default: `${nunito.style.fontFamily}, sans-serif`,
     },
 
     space: {

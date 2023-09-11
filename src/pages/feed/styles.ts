@@ -1,8 +1,7 @@
 import { styled } from '../../styles/stitches.config'
 
 export const PageContainer = styled('div', {
-  marginTop: '$5',
-  margin: '0 6rem',
+  margin: '$5 6rem 0 6rem',
 
   '@media(max-width: 1102px)': {
     margin: '0 4rem',
