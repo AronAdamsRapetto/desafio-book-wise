@@ -7,6 +7,13 @@ import { Adapter } from 'next-auth/adapters'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
+  callbacks: {
+    async session({ session, user }) {
+      session.user.id = user.id
+
+      return session
+    },
+  },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID ?? '',
