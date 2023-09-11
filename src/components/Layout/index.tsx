@@ -25,8 +25,6 @@ export default function Layout({ children }: LayoutProps) {
   const { status, data: session } = useSession()
   const router = useRouter()
 
-  console.log(session)
-
   if (status !== 'loading') {
     return (
       <LayoutWrapper>
@@ -53,7 +51,7 @@ export default function Layout({ children }: LayoutProps) {
               </NavLink>
               {status === 'authenticated' && (
                 <NavLink
-                  href={'/profile'}
+                  href={`/profile/${session.user.id}`}
                   selected={router.pathname === '/profile'}
                 >
                   <User
