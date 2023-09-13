@@ -84,7 +84,7 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
       <ActivityContent>
         <Image src={bookImageUrl} alt="" width={108} height={152} />
         <div>
-          <span>{activity.book.name}</span>
+          <span title={activity.book.name}>{activity.book.name}</span>
           <span>{activity.book.author}</span>
           <DescriptionContainer>
             <span>{descriptionText}</span>

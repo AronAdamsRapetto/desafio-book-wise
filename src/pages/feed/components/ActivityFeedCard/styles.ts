@@ -96,6 +96,12 @@ export const ActivityContent = styled('div', {
       fontWeight: '$bold',
       lineHeight: '$short',
       color: '$gray100',
+
+      display: '-webkit-box',
+      overflow: 'hidden',
+      whiteSpace: 'pre-wrap',
+      '-webkit-line-clamp': 1,
+      '-webkit-box-orient': 'vertical',
     },
 
     '> span:nth-child(2)': {

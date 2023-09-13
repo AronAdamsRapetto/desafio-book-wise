@@ -44,6 +44,7 @@ export type PopularBook = {
 }
 
 type LoggedUserLastRating = {
+  id: string
   description: string
   rate: number
   createdAt: string
@@ -89,7 +90,7 @@ export default function Feed({
             <>
               <div>
                 <span>Sua última leitura</span>
-                <Link href="/profile">
+                <Link href={`/profile/${loggedUserLastRating.id}`}>
                   Ver todas
                   <CaretRight size={16} />
                 </Link>
@@ -236,6 +237,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         email: session.user.email,
       },
       select: {
+        id: true,
         ratings: {
           select: {
             description: true,
@@ -259,6 +261,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       const { created_at: createdAt, book, ...rest } = lastRating
 
       loggedUserLastRating = {
+        id: loggedUserRatings.id,
         createdAt: createdAt.toISOString(),
         book: {
           coverUrl: book.cover_url,

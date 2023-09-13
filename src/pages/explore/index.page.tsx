@@ -1,3 +1,161 @@
-export default function Explore() {
-  return <h1>Explore</h1>
+import { Binoculars, MagnifyingGlass, Star } from 'phosphor-react'
+import {
+  BookCard,
+  BookCardInfo,
+  BookListContainer,
+  CategoryButton,
+  CategoryContainer,
+  InputContainer,
+  PageContainer,
+  PageHeader,
+} from './styles'
+import Image from 'next/image'
+import { GetServerSideProps } from 'next'
+import { prisma } from '@/lib/prisma'
+import { useState } from 'react'
+
+interface BookData {
+  id: string
+  coverUrl: string
+  name: string
+  author: string
+  rate: number
+  categories: string[]
+}
+
+interface ExploreProps {
+  books: BookData[]
+  categories: {
+    id: string
+    name: string
+  }[]
+}
+
+export default function Explore({ books, categories }: ExploreProps) {
+  const [searchBookValue, setSearchBookValue] = useState('')
+  const [categoryFilterValue, setCategoryFilterValue] = useState('all')
+  const ratingMap = [1, 2, 3, 4, 5]
+
+  return (
+    <PageContainer>
+      <PageHeader>
+        <div>
+          <Binoculars size={32} />
+          <h1>Explorar</h1>
+        </div>
+        <InputContainer>
+          <input
+            onChange={(e) => setSearchBookValue(e.target.value)}
+            value={searchBookValue}
+            name="searchInput"
+            type="text"
+            placeholder="Buscar livro avaliado"
+          />
+          <MagnifyingGlass size={20} />
+        </InputContainer>
+      </PageHeader>
+      <CategoryContainer>
+        <CategoryButton
+          onClick={() => setCategoryFilterValue('all')}
+          selected={categoryFilterValue === 'all' && true}
+        >
+          Tudo
+        </CategoryButton>
+        {categories.map(({ name, id }) => (
+          <CategoryButton
+            onClick={() => setCategoryFilterValue(name)}
+            selected={categoryFilterValue === name && true}
+            key={id}
+          >
+            {name}
+          </CategoryButton>
+        ))}
+      </CategoryContainer>
+      <BookListContainer>
+        {books
+          .filter(
+            ({ categories }) =>
+              categories.includes(categoryFilterValue) ||
+              categoryFilterValue === 'all',
+          )
+          .filter(({ name }) =>
+            name.toLowerCase().includes(searchBookValue.toLowerCase()),
+          )
+          .map((book) => (
+            <BookCard key={book.id}>
+              <Image
+                src={`http://localhost:3000/${book.coverUrl}`}
+                alt=""
+                width={108}
+                height={152}
+              />
+              <BookCardInfo>
+                <div>
+                  <span title={book.name}>{book.name}</span>
+                  <span>{book.author}</span>
+                </div>
+                <div>
+                  {ratingMap.map((value) => {
+                    if (book.rate >= value) {
+                      return <Star key={value} size={16} weight="fill" />
+                    } else {
+                      return <Star key={value} size={16} weight="regular" />
+                    }
+                  })}
+                </div>
+              </BookCardInfo>
+            </BookCard>
+          ))}
+      </BookListContainer>
+    </PageContainer>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const books = await prisma.book.findMany({
+    select: {
+      id: true,
+      cover_url: true,
+      name: true,
+      author: true,
+      ratings: {
+        select: {
+          rate: true,
+        },
+      },
+      categories: {
+        select: {
+          category: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  const booksData = books
+    .map(({ cover_url: coverUrl, categories, ratings, ...book }) => ({
+      coverUrl,
+      categories: categories.map(({ category }) => category.name),
+      rate:
+        ratings.reduce((acc, { rate }) => (acc += rate), 0) / ratings.length,
+      ...book,
+    }))
+    .sort((a, b) => b.rate - a.rate)
+
+  const categories = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  })
+
+  return {
+    props: {
+      books: booksData,
+      categories,
+    },
+  }
 }

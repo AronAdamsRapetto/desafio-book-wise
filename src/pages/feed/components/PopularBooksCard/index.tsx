@@ -18,7 +18,7 @@ export default function PopularBookCard({ book }: PopularBookCardProps) {
       <Image src={bookImageUrl} alt="" width={100} height={100} />
       <BookCardInfo>
         <div>
-          <span>{book.name}</span>
+          <span title={book.name}>{book.name}</span>
           <span>{book.author}</span>
         </div>
         <div>

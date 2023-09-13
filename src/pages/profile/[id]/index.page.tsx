@@ -1,3 +1,4 @@
+import { ChangeEvent, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 
@@ -27,7 +28,6 @@ import {
   RatingHeader,
   UserAnalyticsContainer,
 } from './styles'
-import { ChangeEvent, useState } from 'react'
 
 interface Rating {
   createdAt: string
@@ -92,7 +92,7 @@ export default function Profile({ profileData }: ProfileProps) {
           <RatingFeedContainer>
             {profileData.ratings
               ?.filter(({ book: { name } }) =>
-                name.toLowerCase().includes(searchInput),
+                name.toLowerCase().includes(searchInput.toLowerCase()),
               )
               .map((rating) => (
                 <RatingContainer key={rating.book.id}>
