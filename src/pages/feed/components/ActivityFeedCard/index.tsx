@@ -64,7 +64,7 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
             />
           </div>
           <div>
-            <Link href="/profile">
+            <Link href={`/profile/${activity.user.id}`}>
               <span>{activity.user.name}</span>
             </Link>
             <span>{activity.createdAt}</span>

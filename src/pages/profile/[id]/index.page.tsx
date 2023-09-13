@@ -45,6 +45,12 @@ interface ProfileUserData {
   createdAt?: string
   image: string | null
   ratings?: Rating[]
+  analitycs: {
+    totalPagesReaded: number
+    totalBooksRated: number
+    totalAuthorsReaded: number
+    mostReadedCategory: string
+  }
 }
 
 interface ProfileProps {
@@ -128,7 +134,7 @@ export default function Profile({ profileData }: ProfileProps) {
               <BookOpen size={32} />
 
               <div>
-                <span>3853</span>
+                <span>{profileData.analitycs.totalPagesReaded}</span>
                 <span>Páginas lidas</span>
               </div>
             </div>
@@ -137,7 +143,7 @@ export default function Profile({ profileData }: ProfileProps) {
               <Books size={32} />
 
               <div>
-                <span>10</span>
+                <span>{profileData.analitycs.totalBooksRated}</span>
                 <span>Livros avaliados</span>
               </div>
             </div>
@@ -146,7 +152,7 @@ export default function Profile({ profileData }: ProfileProps) {
               <UserList size={32} />
 
               <div>
-                <span>8</span>
+                <span>{profileData.analitycs.totalAuthorsReaded}</span>
                 <span>Autores lidos</span>
               </div>
             </div>
@@ -155,7 +161,7 @@ export default function Profile({ profileData }: ProfileProps) {
               <BookmarkSimple size={32} />
 
               <div>
-                <span>Computação</span>
+                <span>{profileData.analitycs.mostReadedCategory}</span>
                 <span>Categoria mais lida</span>
               </div>
             </div>
@@ -171,67 +177,141 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     query: { id },
   } = ctx
 
-  if (typeof id === 'string') {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        name: true,
-        created_at: true,
-        image: true,
-        ratings: {
-          select: {
-            created_at: true,
-            description: true,
-            rate: true,
-            book: {
-              select: {
-                id: true,
-                author: true,
-                cover_url: true,
-                name: true,
+  if (typeof id !== 'string') {
+    return {
+      notFound: true,
+    }
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      name: true,
+      created_at: true,
+      image: true,
+      ratings: {
+        select: {
+          created_at: true,
+          description: true,
+          rate: true,
+          book: {
+            select: {
+              id: true,
+              author: true,
+              cover_url: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!user) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const { created_at: createdAt, ratings, ...userData } = user
+
+  const orderedRatings: Rating[] = ratings
+    .map(({ book, created_at: createdAt, ...rate }) => ({
+      book: {
+        coverUrl: book.cover_url,
+        ...book,
+      },
+      createdAt: createdAt.toISOString(),
+      ...rate,
+    }))
+    .sort((a, b) => {
+      if (a.createdAt < b.createdAt) {
+        return 1
+      }
+      if (a.createdAt > b.createdAt) {
+        return -1
+      }
+
+      return 0
+    })
+
+  const analitycsData = await prisma.rating.findMany({
+    where: { user_id: id },
+    select: {
+      id: true,
+      book: {
+        select: {
+          total_pages: true,
+          author: true,
+          categories: {
+            select: {
+              category: {
+                select: {
+                  name: true,
+                },
               },
             },
           },
         },
       },
+    },
+  })
+
+  const totalPagesReaded = analitycsData.reduce(
+    (acc, { book: { total_pages: totalPages } }) => (acc += totalPages),
+    0,
+  )
+
+  const totalBooksRated = analitycsData.length
+
+  const authorConts: { [key: string]: number } = {}
+  analitycsData.forEach(({ book: { author } }) => {
+    if (authorConts[author] === undefined) {
+      authorConts[author] = 1
+    } else {
+      authorConts[author] += 1
+    }
+  })
+
+  const totalAuthorsReaded = analitycsData.filter(
+    ({ book: { author } }) => authorConts[author] === 1,
+  ).length
+
+  const categoryCounts: { [key: string]: number } = {}
+
+  analitycsData.forEach(({ book: { categories } }) => {
+    categories.forEach(({ category: { name } }) => {
+      if (categoryCounts[name] === undefined) {
+        categoryCounts[name] = 1
+      } else {
+        categoryCounts[name] += 1
+      }
     })
+  })
 
-    if (user) {
-      const { created_at: createdAt, ratings, ...userData } = user
+  let mostReadedCategory = null
+  let maxCount = 0
 
-      const orderedRatings: Rating[] = ratings
-        .map(({ book, created_at: createdAt, ...rate }) => ({
-          book: {
-            coverUrl: book.cover_url,
-            ...book,
-          },
-          createdAt: createdAt.toISOString(),
-          ...rate,
-        }))
-        .sort((a, b) => {
-          if (a.createdAt < b.createdAt) {
-            return 1
-          }
-          if (a.createdAt > b.createdAt) {
-            return -1
-          }
-
-          return 0
-        })
-
-      const profileData = {
-        ...userData,
-        createdAt: createdAt.toISOString(),
-        ratings: orderedRatings,
-      }
-
-      return {
-        props: { profileData },
-      }
+  for (const [category, count] of Object.entries(categoryCounts)) {
+    if (count > maxCount) {
+      mostReadedCategory = category
+      maxCount = count
     }
   }
 
+  const profileData = {
+    ...userData,
+    createdAt: createdAt.toISOString(),
+    ratings: orderedRatings,
+    analitycs: {
+      totalPagesReaded,
+      totalBooksRated,
+      totalAuthorsReaded,
+      mostReadedCategory,
+    },
+  }
+
   return {
-    notFound: true,
+    props: { profileData },
   }
 }

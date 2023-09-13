@@ -1,6 +1,7 @@
 import { styled } from '@/styles/stitches.config'
 
 export const PageContainer = styled('div', {
+  width: '100%',
   margin: '$5 6rem 0 6rem',
 })
 
@@ -81,6 +82,8 @@ export const RatingFeedContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$6',
+
+  marginBottom: '$5',
 })
 
 export const RatingContainer = styled('div', {
@@ -187,7 +190,7 @@ export const UserProfileHeader = styled('div', {
     overflow: 'hidden',
 
     borderRadius: '$full',
-    border: '2px solid transparent',
+    border: '3px solid transparent',
     background:
       'linear-gradient($gray700, $gray700) padding-box, $gradient-vertical border-box',
   },

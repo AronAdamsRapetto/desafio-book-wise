@@ -26,6 +26,7 @@ export type Activity = {
   user: {
     image?: string
     name: string
+    id: string
   }
   book: {
     coverUrl: string
@@ -162,6 +163,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         select: {
           image: true,
           name: true,
+          id: true,
         },
       },
       book: {
