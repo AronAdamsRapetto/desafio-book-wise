@@ -128,13 +128,18 @@ export const BookListContainer = styled('main', {
 })
 
 export const BookCard = styled('button', {
-  border: 0,
   display: 'flex',
   gap: '$5',
 
   padding: '$4 $5',
   background: '$gray700',
   borderRadius: '$md',
+  border: '2px solid transparent',
+
+  '&:hover': {
+    cursor: 'pointer',
+    borderColor: '$gray600',
+  },
 })
 
 export const BookCardInfo = styled('div', {

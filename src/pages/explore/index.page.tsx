@@ -1,3 +1,9 @@
+import { GetServerSideProps } from 'next'
+import { useState } from 'react'
+import Image from 'next/image'
+
+import { prisma } from '@/lib/prisma'
+import * as RadixDialog from '@radix-ui/react-dialog'
 import { Binoculars, MagnifyingGlass, Star } from 'phosphor-react'
 import {
   BookCard,
@@ -9,10 +15,7 @@ import {
   PageContainer,
   PageHeader,
 } from './styles'
-import Image from 'next/image'
-import { GetServerSideProps } from 'next'
-import { prisma } from '@/lib/prisma'
-import { useState } from 'react'
+import BookDialog from '@/components/BookDialog'
 
 interface BookData {
   id: string
@@ -72,40 +75,45 @@ export default function Explore({ books, categories }: ExploreProps) {
         ))}
       </CategoryContainer>
       <BookListContainer>
-        {books
-          .filter(
-            ({ categories }) =>
-              categories.includes(categoryFilterValue) ||
-              categoryFilterValue === 'all',
-          )
-          .filter(({ name }) =>
-            name.toLowerCase().includes(searchBookValue.toLowerCase()),
-          )
-          .map((book) => (
-            <BookCard key={book.id}>
-              <Image
-                src={`http://localhost:3000/${book.coverUrl}`}
-                alt=""
-                width={108}
-                height={152}
-              />
-              <BookCardInfo>
-                <div>
-                  <span title={book.name}>{book.name}</span>
-                  <span>{book.author}</span>
-                </div>
-                <div>
-                  {ratingMap.map((value) => {
-                    if (book.rate >= value) {
-                      return <Star key={value} size={16} weight="fill" />
-                    } else {
-                      return <Star key={value} size={16} weight="regular" />
-                    }
-                  })}
-                </div>
-              </BookCardInfo>
-            </BookCard>
-          ))}
+        <RadixDialog.Root>
+          {books
+            .filter(
+              ({ categories }) =>
+                categories.includes(categoryFilterValue) ||
+                categoryFilterValue === 'all',
+            )
+            .filter(({ name }) =>
+              name.toLowerCase().includes(searchBookValue.toLowerCase()),
+            )
+            .map((book) => (
+              <RadixDialog.Trigger key={book.id} asChild>
+                <BookCard>
+                  <Image
+                    src={`http://localhost:3000/${book.coverUrl}`}
+                    alt=""
+                    width={108}
+                    height={152}
+                  />
+                  <BookCardInfo>
+                    <div>
+                      <span title={book.name}>{book.name}</span>
+                      <span>{book.author}</span>
+                    </div>
+                    <div>
+                      {ratingMap.map((value) => {
+                        if (book.rate >= value) {
+                          return <Star key={value} size={16} weight="fill" />
+                        } else {
+                          return <Star key={value} size={16} weight="regular" />
+                        }
+                      })}
+                    </div>
+                  </BookCardInfo>
+                </BookCard>
+              </RadixDialog.Trigger>
+            ))}
+          <BookDialog />
+        </RadixDialog.Root>
       </BookListContainer>
     </PageContainer>
   )
