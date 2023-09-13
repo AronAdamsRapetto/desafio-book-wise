@@ -27,6 +27,7 @@ import {
   RatingHeader,
   UserAnalyticsContainer,
 } from './styles'
+import { ChangeEvent, useState } from 'react'
 
 interface Rating {
   createdAt: string
@@ -58,7 +59,16 @@ interface ProfileProps {
 }
 
 export default function Profile({ profileData }: ProfileProps) {
+  const [searchInput, setSearchInput] = useState('')
   const ratingMap = [1, 2, 3, 4, 5]
+
+  const handleChange = ({
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(value)
+  }
+
+  console.log(searchInput)
 
   return (
     <PageContainer>
@@ -70,43 +80,55 @@ export default function Profile({ profileData }: ProfileProps) {
       <PageWrapper>
         <LeftSide>
           <InputContainer>
-            <input type="text" placeholder="Buscar livro avaliado" />
+            <input
+              onChange={handleChange}
+              value={searchInput}
+              name="searchInput"
+              type="text"
+              placeholder="Buscar livro avaliado"
+            />
             <MagnifyingGlass size={20} />
           </InputContainer>
           <RatingFeedContainer>
-            {profileData.ratings?.map((rating) => (
-              <RatingContainer key={rating.book.id}>
-                <span>{getDistanceToNow(rating.createdAt)}</span>
-                <RatingCard>
-                  <RatingHeader>
-                    <Image
-                      src={`http://localhost:3000/${rating.book.coverUrl}`}
-                      alt=""
-                      width={98}
-                      height={134}
-                    />
-                    <div>
+            {profileData.ratings
+              ?.filter(({ book: { name } }) =>
+                name.toLowerCase().includes(searchInput),
+              )
+              .map((rating) => (
+                <RatingContainer key={rating.book.id}>
+                  <span>{getDistanceToNow(rating.createdAt)}</span>
+                  <RatingCard>
+                    <RatingHeader>
+                      <Image
+                        src={`http://localhost:3000/${rating.book.coverUrl}`}
+                        alt=""
+                        width={98}
+                        height={134}
+                      />
                       <div>
-                        <span>{rating.book.name}</span>
-                        <span>{rating.book.author}</span>
+                        <div>
+                          <span>{rating.book.name}</span>
+                          <span>{rating.book.author}</span>
+                        </div>
+                        <div>
+                          {ratingMap.map((value) => {
+                            if (rating.rate >= value) {
+                              return (
+                                <Star size={16} weight="fill" key={value} />
+                              )
+                            } else {
+                              return (
+                                <Star size={16} weight="regular" key={value} />
+                              )
+                            }
+                          })}
+                        </div>
                       </div>
-                      <div>
-                        {ratingMap.map((value) => {
-                          if (rating.rate >= value) {
-                            return <Star size={16} weight="fill" key={value} />
-                          } else {
-                            return (
-                              <Star size={16} weight="regular" key={value} />
-                            )
-                          }
-                        })}
-                      </div>
-                    </div>
-                  </RatingHeader>
-                  <p>{rating.description}</p>
-                </RatingCard>
-              </RatingContainer>
-            ))}
+                    </RatingHeader>
+                    <p>{rating.description}</p>
+                  </RatingCard>
+                </RatingContainer>
+              ))}
           </RatingFeedContainer>
         </LeftSide>
 
