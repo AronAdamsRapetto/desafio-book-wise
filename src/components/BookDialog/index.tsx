@@ -1,7 +1,8 @@
 import Image from 'next/image'
+import { useState } from 'react'
 
 import * as RadixDialog from '@radix-ui/react-dialog'
-import { BookOpen, BookmarkSimple, Star, X } from 'phosphor-react'
+import { BookOpen, BookmarkSimple, Check, Star, X } from 'phosphor-react'
 
 import image from '../../../public/books/14-habitos-de-desenvolvedores-altamente-produtivos.jpg'
 import {
@@ -18,6 +19,8 @@ import {
 } from './styles'
 
 export default function BookDialog() {
+  const [isFormOpen, setIsFormOpen] = useState(false)
+
   return (
     <RadixDialog.Portal>
       <Overlay />
@@ -70,8 +73,46 @@ export default function BookDialog() {
         <RatingsContainer>
           <div>
             <span>Avaliações</span>
-            <button type="button">Avaliar</button>
+            {isFormOpen ? (
+              <></>
+            ) : (
+              <button type="button" onClick={() => setIsFormOpen(true)}>
+                Avaliar
+              </button>
+            )}
           </div>
+
+          {isFormOpen && (
+            <div>
+              <div>
+                <div>
+                  <Image
+                    src={'https://github.com/AronAdamsRapetto.png'}
+                    alt=""
+                    width={40}
+                    height={40}
+                  />
+                  <span>Cristofer Rosser</span>
+                </div>
+                <div>
+                  <Star size={24} />
+                  <Star size={24} />
+                  <Star size={24} />
+                  <Star size={24} />
+                  <Star size={24} />
+                </div>
+              </div>
+              <textarea />
+              <div>
+                <button type="button">
+                  <X size={24} />
+                </button>
+                <button type="button">
+                  <Check size={24} />
+                </button>
+              </div>
+            </div>
+          )}
 
           <RateCardContainer>
             <RateHeader>
