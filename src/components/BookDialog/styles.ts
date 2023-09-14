@@ -205,6 +205,131 @@ export const RatingsContainer = styled('section', {
   },
 })
 
+export const RateFormContainer = styled('form', {
+  display: 'flex',
+  flexDirection: 'column',
+
+  padding: '$6',
+  background: '$gray700',
+  borderRadius: '$sm',
+
+  '& > div:has(textarea)': {
+    position: 'relative',
+
+    display: 'flex',
+    flexDirection: 'column',
+
+    marginBottom: '$3',
+
+    '& > textarea': {
+      minHeight: '160px',
+      padding: '$3 $5',
+      resize: 'none',
+
+      border: '1px solid $gray500',
+      background: '$gray800',
+      borderRadius: '$sm',
+
+      color: '$gray200',
+      fontFamily: '$default',
+      fontSize: '$sm',
+      fontWeight: '$regular',
+      lineHeight: '$base',
+
+      '&:focus': {
+        outline: 0,
+        border: '1px solid $green200',
+        caretColor: '$green200',
+      },
+    },
+
+    '& > span': {
+      position: 'absolute',
+      bottom: '0.25rem',
+      right: '0.5rem',
+
+      color: '$gray400',
+      fontFamily: '$default',
+      fontSize: '$xs',
+      fontWeight: '$regular',
+      lineHeight: '$base',
+    },
+  },
+})
+
+export const ValueRatingContainer = styled('div', {
+  display: 'flex',
+  justifyContent: 'space-between',
+
+  marginBottom: '$6',
+
+  '& > div:first-child': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '$4',
+
+    '& > div': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      overflow: 'hidden',
+      border: '1px solid transparent',
+      background:
+        'linear-gradient($gray700, $gray700) padding-box, $gradient-vertical border-box',
+      borderRadius: '$full',
+    },
+
+    '& > span': {
+      color: '$gray100',
+      fontFamily: '$default',
+      fontSize: '$md',
+      fontWeight: '$bold',
+      lineHeight: '$short',
+    },
+  },
+
+  '& > div:last-child': {
+    display: 'flex',
+    gap: '$px',
+
+    svg: {
+      color: '$purple100',
+      '&:hover': {
+        cursor: 'pointer',
+      },
+    },
+  },
+})
+
+export const ButtonsFormContainer = styled('div', {
+  display: 'flex',
+  justifyContent: 'flex-end',
+  gap: '$2',
+
+  button: {
+    lineHeight: 0,
+    padding: '$2',
+
+    border: 0,
+    background: '$gray600',
+    borderRadius: '$sm',
+
+    '&:hover': {
+      cursor: 'pointer',
+      background: '$gray500',
+    },
+  },
+
+  'button:first-child': {
+    color: '$purple100',
+  },
+
+  'button:last-child': {
+    color: '$green100',
+  },
+})
+
 export const RateCardContainer = styled('article', {
   display: 'flex',
   flexDirection: 'column',

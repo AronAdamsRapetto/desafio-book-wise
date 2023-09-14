@@ -17,12 +17,23 @@ import {
 } from './styles'
 import BookDialog from '@/components/BookDialog'
 
-interface BookData {
+export interface BookData {
   id: string
   coverUrl: string
   name: string
   author: string
   rate: number
+  totalPages: number
+  ratings: {
+    id: string
+    rate: number
+    description: string
+    createdAt: string
+    user: {
+      name: string
+      image: string
+    }
+  }[]
   categories: string[]
 }
 
@@ -75,18 +86,18 @@ export default function Explore({ books, categories }: ExploreProps) {
         ))}
       </CategoryContainer>
       <BookListContainer>
-        <RadixDialog.Root>
-          {books
-            .filter(
-              ({ categories }) =>
-                categories.includes(categoryFilterValue) ||
-                categoryFilterValue === 'all',
-            )
-            .filter(({ name }) =>
-              name.toLowerCase().includes(searchBookValue.toLowerCase()),
-            )
-            .map((book) => (
-              <RadixDialog.Trigger key={book.id} asChild>
+        {books
+          .filter(
+            ({ categories }) =>
+              categories.includes(categoryFilterValue) ||
+              categoryFilterValue === 'all',
+          )
+          .filter(({ name }) =>
+            name.toLowerCase().includes(searchBookValue.toLowerCase()),
+          )
+          .map((book) => (
+            <RadixDialog.Root key={book.id}>
+              <RadixDialog.Trigger asChild>
                 <BookCard>
                   <Image
                     src={`http://localhost:3000/${book.coverUrl}`}
@@ -111,9 +122,9 @@ export default function Explore({ books, categories }: ExploreProps) {
                   </BookCardInfo>
                 </BookCard>
               </RadixDialog.Trigger>
-            ))}
-          <BookDialog />
-        </RadixDialog.Root>
+              <BookDialog book={book} />
+            </RadixDialog.Root>
+          ))}
       </BookListContainer>
     </PageContainer>
   )
@@ -126,9 +137,19 @@ export const getServerSideProps: GetServerSideProps = async () => {
       cover_url: true,
       name: true,
       author: true,
+      total_pages: true,
       ratings: {
         select: {
+          id: true,
           rate: true,
+          description: true,
+          created_at: true,
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
       },
       categories: {
@@ -143,14 +164,43 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   })
 
+  const book = await prisma.book.findMany({
+    include: {
+      categories: {
+        include: {
+          category: true,
+        },
+      },
+      ratings: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  })
+  console.log(book[0].ratings)
+
   const booksData = books
-    .map(({ cover_url: coverUrl, categories, ratings, ...book }) => ({
-      coverUrl,
-      categories: categories.map(({ category }) => category.name),
-      rate:
-        ratings.reduce((acc, { rate }) => (acc += rate), 0) / ratings.length,
-      ...book,
-    }))
+    .map(
+      ({
+        cover_url: coverUrl,
+        total_pages: totalPages,
+        categories,
+        ratings,
+        ...book
+      }) => ({
+        coverUrl,
+        totalPages,
+        categories: categories.map(({ category }) => category.name),
+        rate:
+          ratings.reduce((acc, { rate }) => (acc += rate), 0) / ratings.length,
+        ratings: ratings.map(({ created_at: createdAt, ...data }) => ({
+          createdAt: createdAt.toISOString(),
+          ...data,
+        })),
+        ...book,
+      }),
+    )
     .sort((a, b) => b.rate - a.rate)
 
   const categories = await prisma.category.findMany({

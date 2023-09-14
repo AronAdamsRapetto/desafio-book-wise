@@ -2,51 +2,82 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 import * as RadixDialog from '@radix-ui/react-dialog'
+import { useSession } from 'next-auth/react'
 import { BookOpen, BookmarkSimple, Check, Star, X } from 'phosphor-react'
 
-import image from '../../../public/books/14-habitos-de-desenvolvedores-altamente-produtivos.jpg'
 import {
   BookInfoContainer,
   BulletInfoContainer,
+  ButtonsFormContainer,
   CloseButton,
   ContentContainer,
   HeaderContainer,
   Overlay,
   RateCardContainer,
+  RateFormContainer,
   RateHeader,
   RatingsContainer,
   UserContainer,
+  ValueRatingContainer,
 } from './styles'
+import LoginDialog from '../LoginDialog'
+import { BookData } from '@/pages/explore/index.page'
+import { getDistanceToNow } from '@/utils/getDistanceToNow'
 
-export default function BookDialog() {
+interface BookDialogProps {
+  book: BookData
+}
+
+export default function BookDialog({ book }: BookDialogProps) {
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [hoveredStar, setHoveredStar] = useState(0)
+  const [selectedRate, setSelectedRate] = useState(0)
+
+  const { status, data: session } = useSession()
+
+  const ratingMap = [1, 2, 3, 4, 5]
+
+  const onClose = (e: Event) => {
+    e.preventDefault()
+
+    setIsFormOpen(false)
+    setSelectedRate(0)
+  }
 
   return (
     <RadixDialog.Portal>
       <Overlay />
-      <ContentContainer>
+
+      <ContentContainer onCloseAutoFocus={onClose}>
         <CloseButton>
           <X size={24} />
         </CloseButton>
         <HeaderContainer>
           <div>
-            <Image src={image} alt="" width={171} height={242} />
+            <Image
+              src={`http://localhost:3000/${book.coverUrl}`}
+              alt=""
+              width={171}
+              height={242}
+            />
             <BookInfoContainer>
               <div>
-                <span>14 Hábitos de Desenvolvedores Altamente Produtivos</span>
-                <span>Zeno Rocha</span>
+                <span>{book.name}</span>
+                <span>{book.author}</span>
               </div>
 
               <div>
                 <div>
-                  <Star size={20} />
-                  <Star size={20} />
-                  <Star size={20} />
-                  <Star size={20} />
-                  <Star size={20} />
+                  {ratingMap.map((value) => {
+                    if (value <= book.rate) {
+                      return <Star key={value} weight="fill" size={20} />
+                    } else {
+                      return <Star key={value} size={20} />
+                    }
+                  })}
                 </div>
 
-                <span>3 avaliações</span>
+                <span>{book.ratings.length} avaliações</span>
               </div>
             </BookInfoContainer>
           </div>
@@ -56,162 +87,138 @@ export default function BookDialog() {
               <BookmarkSimple size={24} />
               <div>
                 <span>Categoria</span>
-                <span>Computação, educação</span>
+
+                <span>
+                  {book.categories
+                    .map((category, i) =>
+                      i === 0 ? category : category.toLowerCase(),
+                    )
+                    .join(', ')}
+                </span>
               </div>
             </div>
 
             <div>
               <BookOpen size={24} />
+
               <div>
                 <span>Páginas</span>
-                <span>160</span>
+                <span>{book.totalPages}</span>
               </div>
             </div>
           </BulletInfoContainer>
         </HeaderContainer>
 
         <RatingsContainer>
-          <div>
-            <span>Avaliações</span>
-            {isFormOpen ? (
-              <></>
-            ) : (
-              <button type="button" onClick={() => setIsFormOpen(true)}>
-                Avaliar
-              </button>
-            )}
-          </div>
-
-          {isFormOpen && (
+          {status === 'authenticated' ? (
             <div>
-              <div>
-                <div>
-                  <Image
-                    src={'https://github.com/AronAdamsRapetto.png'}
-                    alt=""
-                    width={40}
-                    height={40}
-                  />
-                  <span>Cristofer Rosser</span>
-                </div>
-                <div>
-                  <Star size={24} />
-                  <Star size={24} />
-                  <Star size={24} />
-                  <Star size={24} />
-                  <Star size={24} />
-                </div>
-              </div>
-              <textarea />
-              <div>
-                <button type="button">
-                  <X size={24} />
+              <span>Avaliações</span>
+
+              {isFormOpen ? (
+                <></>
+              ) : (
+                <button type="button" onClick={() => setIsFormOpen(true)}>
+                  Avaliar
                 </button>
-                <button type="button">
-                  <Check size={24} />
-                </button>
-              </div>
+              )}
+            </div>
+          ) : (
+            <div>
+              <span>Avaliações</span>
+
+              <RadixDialog.Root>
+                <RadixDialog.Trigger asChild>
+                  <button type="button">Avaliar</button>
+                </RadixDialog.Trigger>
+
+                <LoginDialog />
+              </RadixDialog.Root>
             </div>
           )}
 
-          <RateCardContainer>
-            <RateHeader>
-              <UserContainer>
+          {isFormOpen && (
+            <RateFormContainer>
+              <ValueRatingContainer>
                 <div>
-                  <Image
-                    src={'https://github.com/AronAdamsRapetto.png'}
-                    alt=""
-                    width={40}
-                    height={40}
-                  />
+                  <div>
+                    <Image
+                      src={session?.user.image ?? ''}
+                      alt=""
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+
+                  <span>{session?.user.name}</span>
                 </div>
 
                 <div>
-                  <span>Brandon botosh</span>
-                  <span>Há 2 dias</span>
+                  {ratingMap.map((value) => (
+                    <Star
+                      key={value}
+                      size={24}
+                      onMouseEnter={() => setHoveredStar(value)}
+                      onMouseLeave={() => setHoveredStar(0)}
+                      weight={
+                        value <= hoveredStar || value <= selectedRate
+                          ? 'fill'
+                          : 'regular'
+                      }
+                    />
+                  ))}
                 </div>
-              </UserContainer>
+              </ValueRatingContainer>
 
               <div>
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
+                <textarea placeholder="Escreva sua avaliação" />
+                <span>0/450</span>
               </div>
-            </RateHeader>
-            <span>
-              Nec tempor nunc in egestas. Euismod nisi eleifend at et in
-              sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectus
-              leo. Sit porta eget nec vitae sit vulputate eget
-            </span>
-          </RateCardContainer>
 
-          <RateCardContainer>
-            <RateHeader>
-              <UserContainer>
-                <div>
-                  <Image
-                    src={'https://github.com/AronAdamsRapetto.png'}
-                    alt=""
-                    width={40}
-                    height={40}
-                  />
-                </div>
+              <ButtonsFormContainer>
+                <button type="button">
+                  <X size={24} />
+                </button>
 
-                <div>
-                  <span>Brandon botosh</span>
-                  <span>Há 2 dias</span>
-                </div>
-              </UserContainer>
+                <button type="button">
+                  <Check size={24} />
+                </button>
+              </ButtonsFormContainer>
+            </RateFormContainer>
+          )}
 
-              <div>
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-              </div>
-            </RateHeader>
-            <span>
-              Nec tempor nunc in egestas. Euismod nisi eleifend at et in
-              sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectus
-              leo. Sit porta eget nec vitae sit vulputate eget
-            </span>
-          </RateCardContainer>
+          {book.ratings.map((rating) => (
+            <RateCardContainer key={rating.id}>
+              <RateHeader>
+                <UserContainer>
+                  <div>
+                    <Image
+                      src={rating.user.image}
+                      alt=""
+                      width={40}
+                      height={40}
+                    />
+                  </div>
 
-          <RateCardContainer>
-            <RateHeader>
-              <UserContainer>
-                <div>
-                  <Image
-                    src={'https://github.com/AronAdamsRapetto.png'}
-                    alt=""
-                    width={40}
-                    height={40}
-                  />
-                </div>
+                  <div>
+                    <span>{rating.user.name}</span>
+                    <span>{getDistanceToNow(rating.createdAt)}</span>
+                  </div>
+                </UserContainer>
 
                 <div>
-                  <span>Brandon botosh</span>
-                  <span>Há 2 dias</span>
+                  {ratingMap.map((value) => {
+                    if (value <= rating.rate) {
+                      return <Star key={value} weight="fill" size={16} />
+                    } else {
+                      return <Star key={value} size={16} />
+                    }
+                  })}
                 </div>
-              </UserContainer>
+              </RateHeader>
 
-              <div>
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-                <Star size={16} />
-              </div>
-            </RateHeader>
-            <span>
-              Nec tempor nunc in egestas. Euismod nisi eleifend at et in
-              sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectus
-              leo. Sit porta eget nec vitae sit vulputate eget
-            </span>
-          </RateCardContainer>
+              <span>{rating.description}</span>
+            </RateCardContainer>
+          ))}
         </RatingsContainer>
       </ContentContainer>
     </RadixDialog.Portal>
