@@ -164,22 +164,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   })
 
-  const book = await prisma.book.findMany({
-    include: {
-      categories: {
-        include: {
-          category: true,
-        },
-      },
-      ratings: {
-        include: {
-          user: true,
-        },
-      },
-    },
-  })
-  console.log(book[0].ratings)
-
   const booksData = books
     .map(
       ({

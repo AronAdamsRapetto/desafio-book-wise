@@ -1,7 +1,17 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { GetServerSideProps } from 'next'
-import { CaretRight, ChartLineUp, Star } from 'phosphor-react'
+import { getSession } from 'next-auth/react'
 
+import { CaretRight, ChartLineUp, Star } from 'phosphor-react'
+import * as RadixDialog from '@radix-ui/react-dialog'
+
+import BookDialog from '@/components/BookDialog'
+import { BookData } from '../explore/index.page'
+import { getDistanceToNow } from '@/utils/getDistanceToNow'
+import ActivityFeedCard from './components/ActivityFeedCard'
+import PopularBookCard from './components/PopularBooksCard'
+import { prisma } from '../../lib/prisma'
 import {
   LastActivityContainer,
   LastActivityContent,
@@ -11,12 +21,6 @@ import {
   RigthSide,
   TitleContainer,
 } from './styles'
-import { prisma } from '../../lib/prisma'
-import ActivityFeedCard from './components/ActivityFeedCard'
-import { getDistanceToNow } from '@/utils/getDistanceToNow'
-import PopularBookCard from './components/PopularBooksCard'
-import Image from 'next/image'
-import { getSession } from 'next-auth/react'
 
 export type Activity = {
   id: string
@@ -35,14 +39,6 @@ export type Activity = {
   }
 }
 
-export type PopularBook = {
-  id: string
-  name: string
-  author: string
-  coverUrl: string
-  rate: number
-}
-
 type LoggedUserLastRating = {
   id: string
   description: string
@@ -57,7 +53,7 @@ type LoggedUserLastRating = {
 
 interface FeedProps {
   activities: Activity[]
-  popularBooks: PopularBook[]
+  popularBooks: BookData[]
   loggedUserLastRating: LoggedUserLastRating | null
 }
 
@@ -142,7 +138,11 @@ export default function Feed({
           </div>
           <div>
             {popularBooks.map((book) => (
-              <PopularBookCard key={book.id} book={book} />
+              <RadixDialog.Root key={book.id}>
+                <PopularBookCard book={book} />
+
+                <BookDialog book={book} />
+              </RadixDialog.Root>
             ))}
           </div>
         </RigthSide>
@@ -201,32 +201,55 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const books = await prisma.book.findMany({
     select: {
       id: true,
+      cover_url: true,
       name: true,
       author: true,
-      cover_url: true,
+      total_pages: true,
       ratings: {
         select: {
+          id: true,
           rate: true,
+          description: true,
+          created_at: true,
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
+      categories: {
+        select: {
+          category: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
     },
   })
 
   const popularBooks = books.map(
-    ({ cover_url: coverUrl, ratings, ...book }) => {
-      const rate = ratings.reduce((value, { rate }, index) => {
-        if (index < ratings.length - 1) {
-          return (value += rate)
-        }
-        return (value += rate) / ratings.length
-      }, 0)
-
-      return {
-        coverUrl,
-        rate,
-        ...book,
-      }
-    },
+    ({
+      cover_url: coverUrl,
+      total_pages: totalPages,
+      categories,
+      ratings,
+      ...book
+    }) => ({
+      coverUrl,
+      totalPages,
+      categories: categories.map(({ category }) => category.name),
+      rate:
+        ratings.reduce((acc, { rate }) => (acc += rate), 0) / ratings.length,
+      ratings: ratings.map(({ created_at: createdAt, ...data }) => ({
+        createdAt: createdAt.toISOString(),
+        ...data,
+      })),
+      ...book,
+    }),
   )
 
   let loggedUserLastRating: LoggedUserLastRating | null

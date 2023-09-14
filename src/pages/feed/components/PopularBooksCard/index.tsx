@@ -1,11 +1,11 @@
 import Image from 'next/image'
 
 import { BookCard, BookCardInfo } from './styles'
-import { PopularBook } from '../../index.page'
 import { Star } from 'phosphor-react'
+import { BookData } from '@/pages/explore/index.page'
 
 interface PopularBookCardProps {
-  book: PopularBook
+  book: BookData
 }
 
 export default function PopularBookCard({ book }: PopularBookCardProps) {
@@ -13,7 +13,6 @@ export default function PopularBookCard({ book }: PopularBookCardProps) {
   const bookImageUrl = `http://localhost:3000/${book.coverUrl}`
 
   return (
-    // Abrirá o dialog com o livro
     <BookCard>
       <Image src={bookImageUrl} alt="" width={100} height={100} />
       <BookCardInfo>

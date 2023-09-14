@@ -1,6 +1,7 @@
 import { styled } from '@/styles/stitches.config'
+import { Trigger } from '@radix-ui/react-dialog'
 
-export const BookCard = styled('button', {
+export const BookCard = styled(Trigger, {
   display: 'flex',
   gap: '$5',
 
