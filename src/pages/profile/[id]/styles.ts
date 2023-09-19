@@ -78,6 +78,27 @@ export const InputContainer = styled('form', {
   },
 })
 
+export const EmptyFeedContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '$6',
+
+  marginBottom: '$5',
+
+  '& > span': {
+    color: '$gray400',
+    fontFamily: '$default',
+    fontWeight: '$bold',
+    lineHeight: '$short',
+    fontSize: '$2xl',
+  },
+
+  '& > svg': {
+    color: '$purple100',
+  },
+})
+
 export const RatingFeedContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',

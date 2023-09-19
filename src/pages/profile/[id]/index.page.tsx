@@ -27,6 +27,7 @@ import {
   RatingFeedContainer,
   RatingHeader,
   UserAnalyticsContainer,
+  EmptyFeedContainer,
 } from './styles'
 
 interface Rating {
@@ -68,8 +69,6 @@ export default function Profile({ profileData }: ProfileProps) {
     setSearchInput(value)
   }
 
-  console.log(searchInput)
-
   return (
     <PageContainer>
       <TitleContainer>
@@ -89,47 +88,58 @@ export default function Profile({ profileData }: ProfileProps) {
             />
             <MagnifyingGlass size={20} />
           </InputContainer>
-          <RatingFeedContainer>
-            {profileData.ratings
-              ?.filter(({ book: { name } }) =>
-                name.toLowerCase().includes(searchInput.toLowerCase()),
-              )
-              .map((rating) => (
-                <RatingContainer key={rating.book.id}>
-                  <span>{getDistanceToNow(rating.createdAt)}</span>
-                  <RatingCard>
-                    <RatingHeader>
-                      <Image
-                        src={`http://localhost:3000/${rating.book.coverUrl}`}
-                        alt=""
-                        width={98}
-                        height={134}
-                      />
-                      <div>
+          {profileData.ratings?.length ? (
+            <RatingFeedContainer>
+              {profileData.ratings
+                ?.filter(({ book: { name } }) =>
+                  name.toLowerCase().includes(searchInput.toLowerCase()),
+                )
+                .map((rating) => (
+                  <RatingContainer key={rating.book.id}>
+                    <span>{getDistanceToNow(rating.createdAt)}</span>
+                    <RatingCard>
+                      <RatingHeader>
+                        <Image
+                          src={`http://localhost:3000/${rating.book.coverUrl}`}
+                          alt=""
+                          width={98}
+                          height={134}
+                        />
                         <div>
-                          <span>{rating.book.name}</span>
-                          <span>{rating.book.author}</span>
+                          <div>
+                            <span>{rating.book.name}</span>
+                            <span>{rating.book.author}</span>
+                          </div>
+                          <div>
+                            {ratingMap.map((value) => {
+                              if (rating.rate >= value) {
+                                return (
+                                  <Star size={16} weight="fill" key={value} />
+                                )
+                              } else {
+                                return (
+                                  <Star
+                                    size={16}
+                                    weight="regular"
+                                    key={value}
+                                  />
+                                )
+                              }
+                            })}
+                          </div>
                         </div>
-                        <div>
-                          {ratingMap.map((value) => {
-                            if (rating.rate >= value) {
-                              return (
-                                <Star size={16} weight="fill" key={value} />
-                              )
-                            } else {
-                              return (
-                                <Star size={16} weight="regular" key={value} />
-                              )
-                            }
-                          })}
-                        </div>
-                      </div>
-                    </RatingHeader>
-                    <p>{rating.description}</p>
-                  </RatingCard>
-                </RatingContainer>
-              ))}
-          </RatingFeedContainer>
+                      </RatingHeader>
+                      <p>{rating.description}</p>
+                    </RatingCard>
+                  </RatingContainer>
+                ))}
+            </RatingFeedContainer>
+          ) : (
+            <EmptyFeedContainer>
+              <span>Nenhuma avaliação encontrada</span>
+              <Books size={64} />
+            </EmptyFeedContainer>
+          )}
         </LeftSide>
 
         <RightSide>
