@@ -31,6 +31,7 @@ import {
 } from './styles'
 
 interface Rating {
+  id: string
   createdAt: string
   description: string
   rate: number
@@ -95,7 +96,7 @@ export default function Profile({ profileData }: ProfileProps) {
                   name.toLowerCase().includes(searchInput.toLowerCase()),
                 )
                 .map((rating) => (
-                  <RatingContainer key={rating.book.id}>
+                  <RatingContainer key={rating.book.id} id={rating.id}>
                     <span>{getDistanceToNow(rating.createdAt)}</span>
                     <RatingCard>
                       <RatingHeader>
@@ -223,6 +224,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       image: true,
       ratings: {
         select: {
+          id: true,
           created_at: true,
           description: true,
           rate: true,

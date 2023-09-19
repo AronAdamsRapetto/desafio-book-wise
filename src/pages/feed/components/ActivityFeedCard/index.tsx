@@ -89,7 +89,11 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
           <DescriptionContainer>
             <span>{descriptionText}</span>
             {descriptionText.endsWith('...') && (
-              <SeeMoreButton>Ver mais</SeeMoreButton>
+              <SeeMoreButton>
+                <Link href={`profile/${activity.user.id}#${activity.id}`}>
+                  Ver mais
+                </Link>
+              </SeeMoreButton>
             )}
           </DescriptionContainer>
         </div>
