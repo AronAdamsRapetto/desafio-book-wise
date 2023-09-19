@@ -237,7 +237,10 @@ export default function BookDialog({ book }: BookDialogProps) {
           )}
 
           {ratingList.map((rating) => (
-            <RateCardContainer key={rating.id}>
+            <RateCardContainer
+              ownRate={rating.user.id === session?.user.id}
+              key={rating.id}
+            >
               <RateHeader>
                 <UserContainer>
                   <div>

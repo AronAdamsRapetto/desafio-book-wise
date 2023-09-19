@@ -1,11 +1,38 @@
-import { styled } from '@/styles/stitches.config'
+import { styled, keyframes } from '@/styles/stitches.config'
 import * as RadixDialog from '@radix-ui/react-dialog'
+
+const darkenOverlay = keyframes({
+  '0%': { opacity: 0 },
+  '100%': { òpacity: 1 },
+})
+
+const lightenOverlay = keyframes({
+  '0%': { opacity: 1 },
+  '100%': { opacity: 0 },
+})
 
 export const Overlay = styled(RadixDialog.Overlay, {
   position: 'fixed',
-  background: '$black',
+  background: 'rgba(0, 0, 0, 0.3)',
   inset: 0,
-  opacity: 0.5,
+
+  "&[data-state='open']": {
+    animation: `${darkenOverlay} 300ms ease-in-out`,
+  },
+
+  "&[data-state='closed']": {
+    animation: `${lightenOverlay} 300ms ease-in-out`,
+  },
+})
+
+const slideInAnimation = keyframes({
+  '0%': { transform: 'translateX(110%)' },
+  '100%': { transform: 'translateX(0%)' },
+})
+
+const slideOutAnimation = keyframes({
+  '0%': { transform: 'translateX(0%)' },
+  '100%': { transform: 'translateX(110%)' },
 })
 
 export const ContentContainer = styled(RadixDialog.Content, {
@@ -24,6 +51,14 @@ export const ContentContainer = styled(RadixDialog.Content, {
   padding: '$6 3rem',
 
   overflow: 'auto',
+
+  "&[data-state='open']": {
+    animation: `${slideInAnimation} 300ms ease-in-out`,
+  },
+
+  "&[data-state='closed']": {
+    animation: `${slideOutAnimation} 300ms ease-in-out`,
+  },
 
   '&::-webkit-scrollbar': {
     width: '23px',
@@ -346,6 +381,14 @@ export const RateCardContainer = styled('article', {
     fontSize: '$sm',
     fontWeight: '$regular',
     lineHeight: '$base',
+  },
+
+  variants: {
+    ownRate: {
+      true: {
+        background: '$gray600',
+      },
+    },
   },
 })
 

@@ -213,11 +213,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           created_at: true,
           user: {
             select: {
+              id: true,
               name: true,
               image: true,
             },
           },
         },
+        orderBy: { created_at: 'desc' },
       },
       categories: {
         select: {

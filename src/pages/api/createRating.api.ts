@@ -59,6 +59,7 @@ export default async function handler(
       created_at: true,
       user: {
         select: {
+          id: true,
           name: true,
           image: true,
         },

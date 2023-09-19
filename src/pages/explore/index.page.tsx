@@ -30,6 +30,7 @@ export interface BookData {
     description: string
     createdAt: string
     user: {
+      id: string
       name: string
       image: string
     }
@@ -146,6 +147,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
           created_at: true,
           user: {
             select: {
+              id: true,
               name: true,
               image: true,
             },
