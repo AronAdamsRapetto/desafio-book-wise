@@ -3,6 +3,9 @@ import { useState } from 'react'
 
 import * as RadixDialog from '@radix-ui/react-dialog'
 import { useSession } from 'next-auth/react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { BookOpen, BookmarkSimple, Check, Star, X } from 'phosphor-react'
 
 import {
@@ -23,25 +26,67 @@ import {
 import LoginDialog from '../LoginDialog'
 import { BookData } from '@/pages/explore/index.page'
 import { getDistanceToNow } from '@/utils/getDistanceToNow'
+import { api } from '@/lib/axios'
 
 interface BookDialogProps {
   book: BookData
 }
 
+const handleRateFormSchema = z.object({
+  description: z.string(),
+})
+
+type handleRateFormData = z.infer<typeof handleRateFormSchema>
+
 export default function BookDialog({ book }: BookDialogProps) {
+  const [ratingList, setRatingList] = useState(book.ratings)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [hoveredStar, setHoveredStar] = useState(0)
   const [selectedRate, setSelectedRate] = useState(0)
+  const [errorText, setErrorText] = useState('')
+
+  const { register, handleSubmit, reset } = useForm<handleRateFormData>({
+    resolver: zodResolver(handleRateFormSchema),
+  })
 
   const { status, data: session } = useSession()
 
   const ratingMap = [1, 2, 3, 4, 5]
 
+  const closeForm = () => {
+    setIsFormOpen(false)
+    setErrorText('')
+    setSelectedRate(0)
+    reset()
+  }
+
   const onClose = (e: Event) => {
     e.preventDefault()
+    closeForm()
+  }
 
-    setIsFormOpen(false)
-    setSelectedRate(0)
+  const handleRate = async (data: handleRateFormData) => {
+    if (!data.description) {
+      setErrorText('O texto da avaliação não pode estar vazio')
+      return
+    }
+    if (!selectedRate) {
+      setErrorText('A nota não pode ser 0')
+      return
+    }
+
+    if (session) {
+      const requestPayload = {
+        ...data,
+        rate: selectedRate,
+        bookId: book.id,
+        userId: session.user.id,
+      }
+
+      const response = await api.post('/createRating', requestPayload)
+      setRatingList((lastValue) => [response.data, ...lastValue])
+      book.ratings.push(response.data)
+    }
   }
 
   return (
@@ -137,7 +182,7 @@ export default function BookDialog({ book }: BookDialogProps) {
           )}
 
           {isFormOpen && (
-            <RateFormContainer>
+            <RateFormContainer onSubmit={handleSubmit(handleRate)}>
               <ValueRatingContainer>
                 <div>
                   <div>
@@ -159,6 +204,7 @@ export default function BookDialog({ book }: BookDialogProps) {
                       size={24}
                       onMouseEnter={() => setHoveredStar(value)}
                       onMouseLeave={() => setHoveredStar(0)}
+                      onClick={() => setSelectedRate(value)}
                       weight={
                         value <= hoveredStar || value <= selectedRate
                           ? 'fill'
@@ -168,25 +214,29 @@ export default function BookDialog({ book }: BookDialogProps) {
                   ))}
                 </div>
               </ValueRatingContainer>
+              <span>{errorText}</span>
 
               <div>
-                <textarea placeholder="Escreva sua avaliação" />
+                <textarea
+                  placeholder="Escreva sua avaliação"
+                  {...register('description')}
+                />
                 <span>0/450</span>
               </div>
 
               <ButtonsFormContainer>
-                <button type="button">
+                <button type="button" onClick={closeForm}>
                   <X size={24} />
                 </button>
 
-                <button type="button">
+                <button type="submit">
                   <Check size={24} />
                 </button>
               </ButtonsFormContainer>
             </RateFormContainer>
           )}
 
-          {book.ratings.map((rating) => (
+          {ratingList.map((rating) => (
             <RateCardContainer key={rating.id}>
               <RateHeader>
                 <UserContainer>

@@ -151,6 +151,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
             },
           },
         },
+        orderBy: { created_at: 'desc' },
       },
       categories: {
         select: {
