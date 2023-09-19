@@ -131,7 +131,7 @@ export const BookCard = styled('button', {
   display: 'flex',
   gap: '$5',
 
-  padding: '$4 $5',
+  padding: '$5 $5',
   background: '$gray700',
   borderRadius: '$md',
   border: '2px solid transparent',
@@ -139,6 +139,33 @@ export const BookCard = styled('button', {
   '&:hover': {
     cursor: 'pointer',
     borderColor: '$gray600',
+  },
+
+  variants: {
+    readed: {
+      true: {
+        position: 'relative',
+        overflow: 'hidden',
+
+        '&::before': {
+          content: 'LIDO',
+
+          position: 'absolute',
+          top: 0,
+          right: 0,
+
+          background: '$green300',
+          padding: '$1 $3',
+          borderRadius: '0 0 0 0.25rem',
+
+          color: '$green100',
+          fontFamily: '$default',
+          fontSize: '$xs',
+          fontWeight: '$bold',
+          lineHeight: '$shorter',
+        },
+      },
+    },
   },
 })
 

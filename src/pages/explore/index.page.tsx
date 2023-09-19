@@ -16,6 +16,7 @@ import {
   PageHeader,
 } from './styles'
 import BookDialog from '@/components/BookDialog'
+import { useSession } from 'next-auth/react'
 
 export interface BookData {
   id: string
@@ -49,6 +50,8 @@ interface ExploreProps {
 export default function Explore({ books, categories }: ExploreProps) {
   const [searchBookValue, setSearchBookValue] = useState('')
   const [categoryFilterValue, setCategoryFilterValue] = useState('all')
+  const { data: session } = useSession()
+
   const ratingMap = [1, 2, 3, 4, 5]
 
   return (
@@ -99,7 +102,11 @@ export default function Explore({ books, categories }: ExploreProps) {
           .map((book) => (
             <RadixDialog.Root key={book.id}>
               <RadixDialog.Trigger asChild>
-                <BookCard>
+                <BookCard
+                  readed={book.ratings.some(
+                    (rating) => rating.user.id === session?.user.id,
+                  )}
+                >
                   <Image
                     src={`http://localhost:3000/${book.coverUrl}`}
                     alt=""
