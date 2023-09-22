@@ -33,7 +33,6 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
             : descriptionWords.join(' '),
         )
       } else if (window.innerWidth <= 1223 && window.innerWidth > 1102) {
-        console.log(window.innerWidth)
         setDescriptionText(
           descriptionWords.length > 18
             ? descriptionWords.slice(0, 18).join(' ') + '...'
@@ -43,7 +42,6 @@ export default function ActivityFeedCard({ activity }: ActivityFeedCardProps) {
         setDescriptionText(activity.description)
       }
     }
-    console.log('loop')
 
     handleResize()
 

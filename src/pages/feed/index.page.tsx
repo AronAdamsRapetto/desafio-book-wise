@@ -181,7 +181,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const activities = ratings.map(
     ({ created_at: createdAt, book, description, ...rating }) => {
       const descriptionWords = description.split(' ')
-      console.log(descriptionWords)
 
       return {
         book: {
